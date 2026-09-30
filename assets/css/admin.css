@@ -1,0 +1,4119 @@
+/* ══════════════════════════════════════════════════════════════
+   Wedding Booking Admin — design system
+   Loads only on Wedding Booking admin pages (hook check in admin.php).
+   Brand: teal (#3d6b78) + gold (#b8956a), matching the frontend.
+══════════════════════════════════════════════════════════════ */
+
+.wedding-booking-admin-wrap {
+  /* tokens */
+  --wbook-teal: #3d6b78;
+  --wbook-teal-dark: #2e5562;
+  --wbook-teal-light: #eef4f6;
+  --wbook-gold: #b8956a;
+  --wbook-gold-dark: #9a7a52;
+  --wbook-gold-light: #f7f0e6;
+  --wbook-ink: #1d2327;
+  --wbook-sub: #50575e;
+  --wbook-muted: #8c8f94;
+  --wbook-border: #dcdcde;
+  --wbook-border-soft: #f0f0f1;
+  --wbook-radius: 10px;
+  --wbook-radius-sm: 6px;
+  --wbook-shadow:
+    0 1px 2px rgba(16, 24, 40, 0.05), 0 1px 3px rgba(16, 24, 40, 0.08);
+  --wbook-shadow-lg: 0 12px 32px rgba(16, 24, 40, 0.18);
+
+  /* legacy var still referenced by inline styles */
+  --wedding-booking-border: #dcdcde;
+
+  max-width: 1220px;
+}
+
+/* ─────────────────────────────────────────────
+   Top bar — brand + navigation
+───────────────────────────────────────────── */
+.wbook-topbar {
+  position: sticky;
+  top: 32px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 14px 0 0;
+  padding: 10px 14px;
+  background: #fff;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius);
+  box-shadow: var(--wbook-shadow);
+}
+
+.wbook-topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.wbook-topbar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, var(--wbook-teal), var(--wbook-teal-dark));
+  box-shadow: 0 2px 6px rgba(61, 107, 120, 0.35);
+  flex-shrink: 0;
+}
+
+.wbook-topbar-logo .dashicons {
+  color: #fff;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.wbook-topbar-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--wbook-ink);
+}
+
+.wbook-topbar-ver {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--wbook-gold-light);
+  color: var(--wbook-gold-dark);
+}
+
+.wbook-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  max-width: 100%;
+}
+
+.wbook-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.wbook-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--wbook-sub);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.wbook-tab .dashicons {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.wbook-tab:hover,
+.wbook-tab:focus {
+  background: var(--wbook-teal-light);
+  color: var(--wbook-teal-dark);
+  box-shadow: none;
+}
+
+.wbook-tab:focus-visible {
+  outline: 2px solid var(--wbook-teal);
+  outline-offset: 1px;
+}
+
+.wbook-tab.wedding-booking-active {
+  background: var(--wbook-teal);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(61, 107, 120, 0.35);
+}
+
+.wedding-booking-admin-wrap h1.wbook-page-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--wbook-ink);
+  margin: 20px 0 0;
+  padding: 0;
+  line-height: 1.3;
+}
+
+.wbook-page-sub {
+  color: var(--wbook-muted);
+  font-size: 14px;
+  margin: 5px 0 0;
+}
+
+.wedding-booking-admin-body {
+  margin-top: 14px;
+}
+
+.wedding-booking-admin-body .notice {
+  margin: 12px 0;
+  border-radius: var(--wbook-radius-sm);
+}
+
+/* ─────────────────────────────────────────────
+   Buttons
+───────────────────────────────────────────── */
+.wedding-booking-admin-wrap .button {
+  border-radius: var(--wbook-radius-sm);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.wedding-booking-admin-wrap .button:focus-visible {
+  outline: 2px solid var(--wbook-teal);
+  outline-offset: 1px;
+}
+
+.wedding-booking-admin-wrap .button-primary {
+  background: linear-gradient(180deg, var(--wbook-teal), var(--wbook-teal-dark));
+  border-color: var(--wbook-teal-dark);
+  text-shadow: none;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.12);
+}
+
+.wedding-booking-admin-wrap .button-primary:hover,
+.wedding-booking-admin-wrap .button-primary:focus {
+  background: var(--wbook-teal-dark);
+  border-color: var(--wbook-teal-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(61, 107, 120, 0.3);
+}
+
+.wedding-booking-admin-wrap .button-primary:active {
+  transform: none;
+}
+
+/* Signature CTA — the "+ Add New" button carries the gold brand accent */
+.wedding-booking-admin-wrap .wedding-booking-smart-add.button-primary {
+  background: linear-gradient(180deg, var(--wbook-gold), var(--wbook-gold-dark));
+  border-color: var(--wbook-gold-dark);
+}
+
+.wedding-booking-admin-wrap .wedding-booking-smart-add.button-primary:hover,
+.wedding-booking-admin-wrap .wedding-booking-smart-add.button-primary:focus {
+  background: var(--wbook-gold-dark);
+  border-color: var(--wbook-gold-dark);
+  box-shadow: 0 4px 12px rgba(184, 149, 106, 0.35);
+}
+
+.wedding-booking-admin-wrap .button-secondary:hover {
+  border-color: var(--wbook-teal);
+  color: var(--wbook-teal-dark);
+}
+
+.wedding-booking-btn-ghost {
+  background: transparent;
+}
+
+.wedding-booking-admin-wrap .button-link-delete,
+.wedding-booking-btn-danger {
+  color: #b32d2e !important;
+  padding: 10px 39px;
+  border: 1px solid red;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.wedding-booking-admin-wrap .button-link-delete:hover,
+.wedding-booking-btn-danger:hover {
+  background: #fdecec !important;
+  border-color: #f0b8b8 !important;
+}
+
+.wedding-booking-btn-sm,
+.wbook-btn-sm {
+  min-height: 28px;
+  padding: 0 10px;
+}
+
+/* ─────────────────────────────────────────────
+   Inputs
+───────────────────────────────────────────── */
+.wedding-booking-admin-wrap input[type="text"],
+.wedding-booking-admin-wrap input[type="email"],
+.wedding-booking-admin-wrap input[type="number"],
+.wedding-booking-admin-wrap input[type="search"],
+.wedding-booking-admin-wrap input[type="tel"],
+.wedding-booking-admin-wrap input[type="url"],
+.wedding-booking-admin-wrap input[type="time"],
+.wedding-booking-admin-wrap input[type="date"],
+.wedding-booking-admin-wrap select,
+.wedding-booking-admin-wrap textarea {
+  border-radius: var(--wbook-radius-sm);
+  border-color: var(--wbook-border);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+  min-height: 32px;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.wedding-booking-admin-wrap input[type="text"]:focus,
+.wedding-booking-admin-wrap input[type="email"]:focus,
+.wedding-booking-admin-wrap input[type="number"]:focus,
+.wedding-booking-admin-wrap input[type="search"]:focus,
+.wedding-booking-admin-wrap input[type="tel"]:focus,
+.wedding-booking-admin-wrap input[type="url"]:focus,
+.wedding-booking-admin-wrap input[type="time"]:focus,
+.wedding-booking-admin-wrap input[type="date"]:focus,
+.wedding-booking-admin-wrap select:focus,
+.wedding-booking-admin-wrap textarea:focus {
+  border-color: var(--wbook-teal);
+  box-shadow: 0 0 0 3px rgba(61, 107, 120, 0.14);
+}
+
+.wedding-booking-admin-wrap input[type="checkbox"],
+.wedding-booking-admin-wrap input[type="radio"] {
+  accent-color: var(--wbook-teal);
+}
+
+/* ─────────────────────────────────────────────
+   Smart bar (Add New)
+───────────────────────────────────────────── */
+.wedding-booking-smart-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0 0;
+  flex-wrap: wrap;
+}
+
+.wedding-booking-smart-bar .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─────────────────────────────────────────────
+   Cards (postbox + settings cards)
+───────────────────────────────────────────── */
+.wedding-booking-admin-wrap .postbox {
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius);
+  box-shadow: var(--wbook-shadow);
+  background: #fff;
+  min-width: 0;
+}
+
+.wedding-booking-form-card,
+.wedding-booking-list-card {
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+
+.wedding-booking-form-card .inside,
+.wedding-booking-list-card .inside {
+  padding: 20px 22px;
+  margin: 0;
+}
+
+.wedding-booking-form-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--wbook-ink);
+  margin: 0 0 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--wbook-border-soft);
+}
+
+.wedding-booking-form-title::before,
+.wedding-booking-settings-card > h2::before,
+.wedding-booking-settings-card > h3::before {
+  content: "";
+  width: 4px;
+  height: 16px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, var(--wbook-gold), var(--wbook-teal));
+  flex-shrink: 0;
+}
+
+.wedding-booking-admin-wrap .card {
+  max-width: 980px;
+  min-width: 0;
+  box-sizing: border-box;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius);
+  box-shadow: var(--wbook-shadow);
+  background: #fff;
+  padding: 20px 22px;
+  margin-top: 16px;
+}
+
+.wedding-booking-settings-card > h2,
+.wedding-booking-admin-wrap .wedding-booking-settings-card > h3 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--wbook-ink);
+  margin: 0 0 6px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid var(--wbook-border-soft);
+}
+
+.wedding-booking-settings-card > .description {
+  margin: 10px 0 4px;
+  color: var(--wbook-sub);
+}
+
+.wedding-booking-settings-page {
+  max-width: 980px;
+}
+
+.wedding-booking-settings-page .form-table th {
+  width: 240px;
+  font-weight: 600;
+  color: var(--wbook-ink);
+}
+
+.wedding-booking-settings-page .form-table td .description {
+  margin-top: 8px;
+  color: var(--wbook-muted);
+}
+
+.wedding-booking-settings-page .submit {
+  margin-top: 16px;
+  padding-top: 0;
+}
+
+/* ─────────────────────────────────────────────
+   Forms (CRUD cards)
+───────────────────────────────────────────── */
+.wedding-booking-form-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.wedding-booking-form-grid .wedding-booking-field {
+  margin-bottom: 0;
+}
+
+.wedding-booking-form-grid.wedding-booking-cols-2 {
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+}
+
+/* Rich-text (wp_editor) fields span the whole form grid */
+.wedding-booking-form-grid .wedding-booking-field-editor {
+  grid-column: 1 / -1;
+}
+
+/* Wide fields span the whole form grid */
+.wedding-booking-form-grid .wedding-booking-field-wide {
+  grid-column: 1 / -1;
+}
+
+/* Add-on "Applies To" package checklist */
+.wedding-booking-pkg-checklist {
+  max-height: 190px;
+  overflow-y: auto;
+  border: 1px solid #dcdcde;
+  border-radius: 4px;
+  background: #fff;
+  padding: 6px 10px;
+}
+
+.wedding-booking-pkg-checklist .wedding-booking-pkg-check {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 2px;
+  font-size: 13px;
+  line-height: 1.4;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.wedding-booking-pkg-checklist .wedding-booking-pkg-check:hover {
+  background: #f6f7f7;
+}
+
+.wedding-booking-pkg-checklist .wedding-booking-pkg-check input[type="checkbox"] {
+  margin: 0;
+}
+
+.wedding-booking-pkg-checklist .wedding-booking-pkg-check-all {
+  border-bottom: 1px solid #ececec;
+  padding-bottom: 7px;
+  margin-bottom: 5px;
+}
+
+/* ─────────────────────────────────────────────
+   Add/Edit form polish
+───────────────────────────────────────────── */
+.wedding-booking-form-grid .wedding-booking-field input[type="text"],
+.wedding-booking-form-grid .wedding-booking-field input[type="email"],
+.wedding-booking-form-grid .wedding-booking-field input[type="number"] {
+  width: 100%;
+}
+
+.wedding-booking-field .description {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #757575;
+}
+
+/* Toggle switches row (Active / Featured) */
+.wedding-booking-form-switches {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 32px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #f8f8f7;
+  border: 1px solid var(--wbook-border-soft);
+  border-radius: 6px;
+}
+
+.wedding-booking-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.wedding-booking-toggle input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+
+.wedding-booking-toggle-track {
+  width: 36px;
+  height: 20px;
+  border-radius: 999px;
+  background: #c3c4c7;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+
+.wedding-booking-toggle-track::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease;
+}
+
+.wedding-booking-toggle input:checked + .wedding-booking-toggle-track {
+  background: var(--wbook-teal);
+}
+
+.wedding-booking-toggle input:checked + .wedding-booking-toggle-track::after {
+  transform: translateX(16px);
+}
+
+.wedding-booking-toggle input:focus-visible + .wedding-booking-toggle-track {
+  outline: 2px solid var(--wbook-teal);
+  outline-offset: 2px;
+}
+
+.wedding-booking-toggle-text {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--wbook-ink);
+}
+
+.wedding-booking-toggle-text small {
+  font-size: 11.5px;
+  font-weight: 400;
+  color: #757575;
+}
+
+.wedding-booking-field-editor .wp-editor-wrap {
+  margin-top: 4px;
+}
+
+.wedding-booking-field {
+  margin-bottom: 12px;
+  min-width: 0;
+}
+
+.wedding-booking-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--wbook-sub);
+  margin-bottom: 6px;
+}
+
+.wedding-booking-field .wedding-booking-req {
+  color: var(--wbook-gold-dark);
+}
+
+.wedding-booking-field input[type="text"],
+.wedding-booking-field input[type="email"],
+.wedding-booking-field input[type="number"],
+.wedding-booking-field select,
+.wedding-booking-field textarea {
+  max-width: 100%;
+}
+
+.wedding-booking-field select,
+.wedding-booking-form-card select,
+.wedding-booking-form-grid select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  text-overflow: ellipsis;
+}
+
+.wedding-booking-form-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--wbook-border-soft);
+}
+
+.wedding-booking-form-msg,
+#wedding-booking-settings-msg {
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.wedding-booking-form-msg.wedding-booking-ok,
+#wedding-booking-settings-msg.wedding-booking-ok {
+  color: #147a3d;
+}
+
+.wedding-booking-form-msg.wedding-booking-err,
+#wedding-booking-settings-msg.wedding-booking-err {
+  color: #b32d2e;
+}
+
+/* Success notes fade themselves out once read (see setMsg in admin.js).
+   Errors are left on screen until the next save attempt. */
+.wedding-booking-form-msg,
+#wedding-booking-settings-msg {
+  transition: opacity 0.35s ease;
+}
+
+.wedding-booking-form-msg.wedding-booking-msg-fade,
+#wedding-booking-settings-msg.wedding-booking-msg-fade {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wedding-booking-form-msg,
+  #wedding-booking-settings-msg {
+    transition: none;
+  }
+}
+
+.wedding-booking-hint {
+  color: var(--wbook-sub);
+  font-size: 13px;
+}
+
+.wedding-booking-hint {
+  margin: 14px 0 0;
+}
+
+/* ─────────────────────────────────────────────
+   Filter pills — segmented control
+   Selectors are deliberately over-qualified: WP core styles
+   .subsubsub a / .subsubsub a.current and must lose here.
+───────────────────────────────────────────── */
+.wedding-booking-admin-wrap .subsubsub.wbook-filter-bar,
+.wedding-booking-admin-wrap .subsubsub.wedding-booking-filter-bar {
+  float: none;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 16px 0 4px;
+  padding: 5px;
+  background: #fff;
+  border: 1px solid var(--wbook-border);
+  border-radius: 22px;
+  box-shadow: var(--wbook-shadow);
+  max-width: 100%;
+  color: var(--wbook-sub);
+}
+
+.wedding-booking-admin-wrap .subsubsub li {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.wedding-booking-admin-wrap .subsubsub a.wedding-booking-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: var(--wbook-sub);
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-decoration: none;
+  transition:
+    background 0.16s ease,
+    color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.wedding-booking-admin-wrap .subsubsub a.wedding-booking-filter-btn:hover,
+.wedding-booking-admin-wrap .subsubsub a.wedding-booking-filter-btn:focus {
+  background: var(--wbook-teal-light);
+  color: var(--wbook-teal-dark);
+  box-shadow: none;
+}
+
+.wedding-booking-admin-wrap .subsubsub a.wedding-booking-filter-btn:focus-visible {
+  outline: 2px solid var(--wbook-teal);
+  outline-offset: 1px;
+}
+
+.wedding-booking-admin-wrap .subsubsub a.wedding-booking-filter-btn.current,
+.wedding-booking-admin-wrap .subsubsub a.wedding-booking-filter-btn.wedding-booking-active {
+  background: var(--wbook-teal);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(61, 107, 120, 0.35);
+}
+
+.wedding-booking-filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  background: var(--wbook-border-soft);
+  color: var(--wbook-sub);
+}
+
+.wedding-booking-admin-wrap .subsubsub a.wedding-booking-filter-btn.current .wedding-booking-filter-count,
+.wedding-booking-admin-wrap .subsubsub a.wedding-booking-filter-btn.wedding-booking-active .wedding-booking-filter-count {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+/* ─────────────────────────────────────────────
+   Tables
+───────────────────────────────────────────── */
+.wedding-booking-table-wrap,
+.wedding-booking-list-card .inside {
+  overflow-x: auto;
+}
+
+.wedding-booking-table-wrap {
+  margin-top: 12px;
+  border-radius: var(--wbook-radius);
+  box-shadow: var(--wbook-shadow);
+}
+
+.wedding-booking-admin-wrap .wp-list-table.wedding-booking-table {
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius);
+  overflow: hidden;
+}
+
+.wedding-booking-table,
+.wp-list-table.wedding-booking-table {
+  table-layout: auto;
+  width: 100%;
+}
+
+.wedding-booking-table thead th {
+  background: #f6f7f8;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--wbook-sub);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--wbook-border);
+}
+
+.wedding-booking-table tbody td {
+  padding: 12px 14px;
+  font-size: 13px;
+  vertical-align: middle;
+  white-space: normal;
+  transition: background 0.12s ease;
+}
+
+.wedding-booking-admin-wrap .wp-list-table.striped > tbody > :nth-child(odd) {
+  background: #fbfbfc;
+}
+
+.wedding-booking-table tbody tr:hover > td {
+  background: #f2f6f7;
+}
+
+.wedding-booking-table td small {
+  overflow-wrap: anywhere;
+  color: var(--wbook-muted);
+}
+
+.wedding-booking-table td .button {
+  vertical-align: middle;
+}
+
+/* ─────────────────────────────────────────────
+   Status badges
+───────────────────────────────────────────── */
+.wedding-booking-badge,
+.wbook-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.wedding-booking-badge::before,
+.wbook-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.wbook-badge-pending {
+  background: #fff6e0;
+  color: #8a6100;
+}
+
+.wbook-badge-pending_payment {
+  background: #eef1ff;
+  color: #3b47b8;
+}
+
+.wedding-booking-badge-confirmed,
+.wbook-badge-confirmed,
+.wbook-badge-processing {
+  background: #e7f6ec;
+  color: #147a3d;
+}
+
+.wbook-badge-cancelled {
+  background: #fdecec;
+  color: #b32d2e;
+}
+
+.wbook-badge-completed {
+  background: #e7f0fa;
+  color: #1d5b9f;
+}
+
+.wbook-badge-on-hold {
+  background: #fff1e0;
+  color: #96570f;
+}
+
+/* ─────────────────────────────────────────────
+   Row actions (bookings table)
+───────────────────────────────────────────── */
+.wedding-booking-actions-cell {
+  min-width: 250px;
+  vertical-align: middle;
+}
+
+.wedding-booking-row-actions {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wedding-booking-row-actions-toggle .wedding-booking-row-actions-caret {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.wedding-booking-row-actions-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  width: 300px;
+  max-width: min(300px, 80vw);
+  max-height: min(70vh, 420px);
+  overflow: auto;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius);
+  background: #fff;
+  box-shadow: var(--wbook-shadow-lg);
+  padding: 12px;
+  animation: wbook-pop 0.14s ease;
+}
+
+.wedding-booking-row-actions-section {
+  margin: 0;
+  padding: 10px 0;
+  border-top: 1px solid var(--wbook-border-soft);
+}
+
+.wedding-booking-row-actions-section:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.wedding-booking-row-actions-label {
+  font-size: 10.5px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--wbook-muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.wedding-booking-row-actions-menu .wbook-status-select,
+.wedding-booking-row-actions-menu .wedding-booking-order-status-select {
+  width: 100%;
+  min-width: 0;
+}
+
+.wedding-booking-payment-quick {
+  display: grid;
+  gap: 2px;
+  margin-top: 0;
+}
+
+.wedding-booking-payment-quick .button {
+  margin: 0;
+  justify-content: flex-start;
+  padding: 4px 8px;
+  min-height: 26px;
+  height: auto;
+  border: 0;
+  box-shadow: none;
+  text-decoration: none;
+  border-radius: var(--wbook-radius-sm);
+  text-align: left;
+}
+
+.wedding-booking-payment-quick .button:hover {
+  background: var(--wbook-border-soft);
+}
+
+.wedding-booking-quick-wait {
+  color: #8a6100 !important;
+}
+
+.wedding-booking-quick-complete {
+  color: #147a3d !important;
+}
+
+.wedding-booking-quick-cancel {
+  color: #b32d2e !important;
+}
+
+.wedding-booking-actions-cell .wbook-status-select {
+  min-width: 140px;
+  max-width: 100%;
+}
+
+.wedding-booking-status-hint {
+  margin-top: 8px;
+  font-size: 11.5px;
+  color: var(--wbook-muted);
+}
+
+.wedding-booking-status-hint.wedding-booking-ok {
+  color: #147a3d;
+}
+
+.wedding-booking-status-hint.wedding-booking-err {
+  color: #b32d2e;
+}
+
+/* ─────────────────────────────────────────────
+   Booking modal
+───────────────────────────────────────────── */
+.wedding-booking-modal,
+.wbook-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 24, 40, 0.55);
+  backdrop-filter: blur(3px);
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.wbook-modal-inner {
+  width: min(760px, 96vw);
+  max-height: 88vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: var(--wbook-shadow-lg);
+  animation: wbook-pop 0.18s ease;
+}
+
+.wbook-modal-head {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--wbook-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background: #fafbfc;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--wbook-ink);
+  z-index: 1;
+}
+
+.wbook-modal-close {
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  line-height: 1;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--wbook-radius-sm);
+  cursor: pointer;
+  color: var(--wbook-sub);
+  transition: background 0.15s ease;
+}
+
+.wbook-modal-close:hover {
+  background: var(--wbook-border-soft);
+  color: var(--wbook-ink);
+}
+
+.wbook-modal-body {
+  padding: 8px 18px 16px;
+}
+
+.wedding-booking-modal-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--wbook-border-soft);
+}
+
+.wedding-booking-modal-row:last-child {
+  border-bottom: 0;
+}
+
+.wedding-booking-modal-label {
+  color: var(--wbook-muted);
+  font-size: 12.5px;
+}
+
+.wedding-booking-modal-val {
+  text-align: right;
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--wbook-ink);
+  overflow-wrap: anywhere;
+}
+
+/* ─────────────────────────────────────────────
+   Partial payment — balance pill (bookings table)
+───────────────────────────────────────────── */
+.wedding-booking-balpill {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.wedding-booking-balpill-due {
+  background: #fff6e0;
+  color: #8a6100;
+}
+
+.wedding-booking-balpill-paid {
+  background: #e7f6ec;
+  color: #147a3d;
+}
+
+/* ─────────────────────────────────────────────
+   Partial payment — modal payment panel
+───────────────────────────────────────────── */
+.wedding-booking-modal-pay {
+  margin: 0 0 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--wbook-teal);
+  border-radius: var(--wbook-radius);
+  background: var(--wbook-teal-light);
+}
+
+.wedding-booking-modal-pay-head {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--wbook-teal-dark);
+  margin-bottom: 10px;
+}
+
+.wedding-booking-modal-pay-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.wedding-booking-modal-pay-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wedding-booking-modal-pay-cell span {
+  font-size: 11.5px;
+  color: var(--wbook-sub);
+}
+
+.wedding-booking-modal-pay-cell strong {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--wbook-ink);
+}
+
+.wedding-booking-modal-pay-cell strong.wedding-booking-bal-due {
+  color: #8a6100;
+}
+
+.wedding-booking-modal-pay-cell strong.wedding-booking-bal-paid {
+  color: #147a3d;
+}
+
+.wedding-booking-modal-pay-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.wedding-booking-modal-pay-actions .button {
+  margin: 0;
+}
+
+/* Balance reminders box: history on the left, "Send reminder now" on the
+   right (or why a reminder can't be sent). */
+.wedding-booking-modal-rem {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 14px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(61, 107, 120, 0.25);
+  border-radius: var(--wbook-radius-sm);
+  background: #fff;
+  transition: box-shadow 0.3s ease;
+}
+
+.wedding-booking-modal-rem.is-just-sent {
+  box-shadow: 0 0 0 2px rgba(26, 158, 75, 0.35);
+}
+
+.wedding-booking-modal-rem-info {
+  display: flex;
+  flex: 1 1 240px;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-size: 12.5px;
+  color: var(--wbook-sub);
+}
+
+.wedding-booking-modal-rem-info strong {
+  font-size: 13px;
+  color: var(--wbook-ink);
+}
+
+.wedding-booking-admin-wrap .wedding-booking-modal-rem .wedding-booking-modal-send-reminder {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.wedding-booking-modal-send-reminder .dashicons {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+.wedding-booking-modal-rem-block {
+  display: flex;
+  flex: 1 1 100%;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0;
+  padding: 7px 10px;
+  border-radius: var(--wbook-radius-sm);
+  background: #fcf9e8;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #8a6100;
+}
+
+.wedding-booking-modal-rem-block .dashicons {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+  color: #dba617;
+}
+
+.wedding-booking-modal-pay-msg {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  min-height: 1em;
+}
+
+.wedding-booking-modal-pay-msg.wedding-booking-ok {
+  color: #147a3d;
+}
+
+.wedding-booking-modal-pay-msg.wedding-booking-err {
+  color: #b32d2e;
+}
+
+@media (max-width: 600px) {
+  .wedding-booking-modal-pay-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Date Slots calendar
+───────────────────────────────────────────── */
+.wedding-booking-dates-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 14px 0 12px;
+}
+
+.wedding-booking-cal-admin-month {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--wbook-ink);
+  min-width: 170px;
+  text-align: center;
+}
+
+.wedding-booking-dates-calendar {
+  background: #fff;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius);
+  box-shadow: var(--wbook-shadow);
+  padding: 14px;
+  max-width: 860px;
+}
+
+.wedding-booking-cal-admin-dh {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-bottom: 8px;
+  color: var(--wbook-muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.wedding-booking-cal-admin-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.wedding-booking-cal-admin-day {
+  min-height: 46px;
+  border: 1px solid #e4e7ea;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 500;
+  background: #fff;
+  color: var(--wbook-ink);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.wedding-booking-cal-admin-day:hover:not(.wedding-booking-past):not(.wedding-booking-day-empty) {
+  border-color: var(--wbook-teal);
+  background: var(--wbook-teal-light);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(61, 107, 120, 0.14);
+}
+
+.wedding-booking-cal-admin-day.wedding-booking-today {
+  border-color: var(--wbook-teal);
+  box-shadow: inset 0 0 0 1px var(--wbook-teal);
+  font-weight: 700;
+}
+
+.wedding-booking-cal-admin-day.wedding-booking-day-empty {
+  border-color: transparent;
+  background: transparent;
+  cursor: default;
+}
+
+.wedding-booking-cal-admin-day.wedding-booking-past {
+  opacity: 0.45;
+  cursor: default;
+  background: #f6f7f7;
+}
+
+.wedding-booking-cal-admin-day.wedding-booking-booked {
+  background: #fdecec;
+  border-color: #f5b5b5;
+  color: #a02222;
+  font-weight: 600;
+}
+
+.wedding-booking-cal-admin-day.wedding-booking-blocked {
+  background: #fff4e0;
+  border-color: #f0ce93;
+  color: #8a5a00;
+  font-weight: 600;
+}
+
+.wedding-booking-cal-legend {
+  margin-top: 14px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  color: var(--wbook-sub);
+  font-size: 12px;
+}
+
+.wedding-booking-leg {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wedding-booking-leg-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid var(--wbook-border);
+}
+
+.wedding-booking-leg-dot.wedding-booking-available {
+  background: #fff;
+}
+
+.wedding-booking-leg-dot.wedding-booking-booked {
+  background: #d63638;
+  border-color: #d63638;
+}
+
+.wedding-booking-leg-dot.wedding-booking-blocked {
+  background: #dba617;
+  border-color: #dba617;
+}
+
+.wedding-booking-dates-msg {
+  margin-top: 10px;
+  min-height: 20px;
+  font-size: 12.5px;
+  color: var(--wbook-muted);
+}
+
+.wedding-booking-dates-msg.wedding-booking-err {
+  color: #b32d2e;
+}
+
+/* ─────────────────────────────────────────────
+   Settings — shortcode chip & field managers
+───────────────────────────────────────────── */
+.wedding-booking-shortcode-copy-wrap {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+
+.wedding-booking-shortcode-code {
+  background: #f6f7f8;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius-sm);
+  padding: 6px 12px;
+  font-family: Consolas, Monaco, monospace;
+  font-size: 13px;
+  color: var(--wbook-teal-dark);
+}
+
+/* Packages list — revealed shareable ?wedding_booking_package= link field */
+.wedding-booking-share-link {
+  margin-top: 6px;
+}
+
+.wedding-booking-share-link-field {
+  width: 100%;
+  max-width: 340px;
+  background: #f6f7f8;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius-sm);
+  padding: 4px 8px;
+  font-family: Consolas, Monaco, monospace;
+  font-size: 12px;
+  color: var(--wbook-teal-dark);
+}
+
+.wedding-booking-cf-table {
+  margin-top: 12px;
+  border: 1px solid var(--wbook-border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: none;
+}
+
+.wedding-booking-cf-table thead th {
+  background: #f6f7f8;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--wbook-sub);
+  padding: 9px 12px;
+}
+
+.wedding-booking-cf-table th,
+.wedding-booking-cf-table td {
+  vertical-align: middle;
+}
+
+.wedding-booking-cf-table tbody td {
+  padding: 8px 12px;
+}
+
+.wedding-booking-cf-table .wedding-booking-cf-check-col {
+  width: 80px;
+  text-align: center;
+}
+
+.wedding-booking-cf-table .wedding-booking-cf-label-input {
+  width: 100%;
+  max-width: 320px;
+}
+
+.wedding-booking-cf-table .wedding-booking-ccf-type-col {
+  width: 140px;
+}
+
+.wedding-booking-cf-table .wedding-booking-ccf-action-col {
+  width: 90px;
+  text-align: center;
+}
+
+.wedding-booking-ccf-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--wbook-ink);
+  margin: 22px 0 4px;
+}
+
+.wedding-booking-ccf-heading::before {
+  content: "";
+  width: 4px;
+  height: 14px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, var(--wbook-gold), var(--wbook-teal));
+  flex-shrink: 0;
+}
+
+.wedding-booking-ccf-actions {
+  margin-top: 10px;
+}
+
+.wedding-booking-ccf-row td {
+  vertical-align: middle;
+}
+
+/* ─────────────────────────────────────────────
+   Empty state
+───────────────────────────────────────────── */
+.wedding-booking-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 44px 16px;
+  text-align: center;
+  color: var(--wbook-muted);
+  font-size: 13px;
+  border: 1px dashed var(--wbook-border);
+  border-radius: var(--wbook-radius);
+  background: #fbfbfc;
+}
+
+/* ─────────────────────────────────────────────
+   Responsive
+───────────────────────────────────────────── */
+@media (max-width: 980px) {
+  .wedding-booking-form-grid.wedding-booking-cols-2 {
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 960px) {
+  .wedding-booking-admin-wrap {
+    max-width: 100%;
+  }
+
+  .wbook-topbar {
+    position: static;
+  }
+
+  .wbook-tabs {
+    width: 100%;
+    order: 3;
+  }
+
+  .wedding-booking-table {
+    min-width: 860px;
+  }
+
+  .wedding-booking-table td select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .wedding-booking-modal-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .wedding-booking-modal-val {
+    text-align: left;
+  }
+}
+
+@media (max-width: 782px) {
+  .wedding-booking-settings-page .form-table th {
+    width: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .wedding-booking-form-grid,
+  .wedding-booking-form-grid.wedding-booking-cols-2 {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .wedding-booking-form-card select,
+  .wedding-booking-list-card select,
+  .wedding-booking-table td select,
+  .wedding-booking-form-card .wedding-booking-field select,
+  .wedding-booking-form-grid select {
+    font-size: 15px;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .wedding-booking-form-actions .button,
+  .wedding-booking-smart-bar .button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .wedding-booking-admin-wrap .subsubsub.wbook-filter-bar,
+  .wedding-booking-admin-wrap .subsubsub.wedding-booking-filter-bar {
+    display: flex;
+    border-radius: 18px;
+  }
+
+  .wedding-booking-filter-bar li,
+  .wbook-filter-bar li {
+    flex: 1 1 auto;
+  }
+
+  .wedding-booking-admin-wrap .subsubsub a.wedding-booking-filter-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .wedding-booking-actions-cell .button,
+  .wedding-booking-actions-cell .wbook-status-select {
+    width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .wedding-booking-form-card .inside,
+  .wedding-booking-list-card .inside {
+    padding: 12px;
+  }
+
+  .wedding-booking-admin-wrap .card {
+    padding: 14px;
+  }
+
+  .wedding-booking-form-card .small-text,
+  .wedding-booking-form-card .regular-text,
+  .wedding-booking-form-card input[type="text"],
+  .wedding-booking-form-card input[type="email"],
+  .wedding-booking-form-card input[type="number"],
+  .wedding-booking-form-card select,
+  .wedding-booking-form-card textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Premium polish — page header, stats, empty
+   states, settings cards, micro-animations
+───────────────────────────────────────────── */
+@keyframes wbook-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* KPI stat cards (Bookings dashboard) */
+.wbook-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+  gap: 12px;
+  margin: 16px 0 2px;
+}
+
+.wbook-stat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #fff;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius);
+  box-shadow: var(--wbook-shadow);
+  transition:
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.wbook-stat:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.1);
+}
+
+.wbook-stat .dashicons {
+  width: 38px;
+  height: 38px;
+  font-size: 18px;
+  line-height: 38px;
+  text-align: center;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.wbook-stat-teal .dashicons {
+  background: var(--wbook-teal-light);
+  color: var(--wbook-teal-dark);
+}
+
+.wbook-stat-gold .dashicons {
+  background: var(--wbook-gold-light);
+  color: var(--wbook-gold-dark);
+}
+
+.wbook-stat-green .dashicons {
+  background: #e7f6ec;
+  color: #147a3d;
+}
+
+.wbook-stat-ink .dashicons {
+  background: #eef1f3;
+  color: var(--wbook-ink);
+}
+
+.wbook-stat-body {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  min-width: 0;
+}
+
+.wbook-stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--wbook-ink);
+  overflow-wrap: anywhere;
+}
+
+.wbook-stat-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--wbook-muted);
+}
+
+/* Empty states — icon + title + hint */
+.wedding-booking-empty .wedding-booking-empty-icon.dashicons {
+  width: 46px;
+  height: 46px;
+  font-size: 22px;
+  line-height: 46px;
+  text-align: center;
+  border-radius: 50%;
+  background: var(--wbook-teal-light);
+  color: var(--wbook-teal-dark);
+  margin-bottom: 5px;
+}
+
+.wedding-booking-empty-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--wbook-ink);
+}
+
+.wedding-booking-empty-hint {
+  font-size: 12.5px;
+  color: var(--wbook-muted);
+}
+
+/* Settings cards — match the form cards */
+.wedding-booking-admin-wrap .card.wedding-booking-settings-card {
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius);
+  box-shadow: var(--wbook-shadow);
+  padding: 20px 24px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wbook-modal-inner,
+  .wedding-booking-row-actions-menu {
+    animation: none;
+  }
+
+  .wedding-booking-admin-wrap .button-primary:hover,
+  .wbook-stat:hover {
+    transform: none;
+  }
+}
+
+/* ── Google Calendar ───────────────────────────────────────── */
+.wedding-booking-admin-wrap .wedding-booking-gcal-panel {
+  margin: 16px 0 4px;
+  padding: 16px 18px;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius-sm);
+  background: #fff;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-panel.is-connected {
+  border-color: #b7e2c6;
+  background: #f4fbf6;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-dot {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #c3c4c7;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-dot.is-on {
+  background: #1a9e4b;
+  box-shadow: 0 0 0 3px rgba(26, 158, 75, 0.18);
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-status-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.4;
+  margin-right: auto;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-status-text span {
+  color: var(--wbook-sub);
+  font-size: 12px;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-connect {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 18px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  background: #fff;
+  color: #3c4043;
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: none;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-connect:hover {
+  background: #f7f8f8;
+  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.24);
+  color: #3c4043;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-connect.is-disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-g {
+  display: inline-flex;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-warn {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 12px 0 0;
+  color: #8a6d1b;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-warn .dashicons {
+  color: #d9a520;
+  flex: 0 0 auto;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-test-msg {
+  margin-left: 10px;
+  font-size: 13px;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-test-msg.is-ok {
+  color: #1a7d3c;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-test-msg.is-err {
+  color: #b32d2e;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0 4px;
+  color: #1a7d3c;
+  font-weight: 500;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-hint .dashicons {
+  color: #1a9e4b;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-redirect {
+  margin-top: 2px;
+  background: #fff;
+  cursor: pointer;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-httpsnote {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  color: #8a6d1b;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-httpsnote .dashicons {
+  color: #d9a520;
+  font-size: 17px;
+  width: 17px;
+  height: 17px;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-setupnote {
+  margin: 14px 0 4px;
+  padding: 12px 16px;
+  border: 1px dashed var(--wbook-border);
+  border-radius: var(--wbook-radius-sm);
+  background: #fbfbfc;
+  color: var(--wbook-sub);
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-setupnote p {
+  margin: 0 0 8px;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-setupnote .dashicons {
+  color: var(--wbook-teal);
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-steps {
+  margin: 0 0 10px 20px;
+  padding: 0;
+  list-style: decimal;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-steps li {
+  margin: 0 0 6px;
+  line-height: 1.6;
+}
+.wedding-booking-admin-wrap .wedding-booking-gcal-steps li:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Balance reminders card ───────────────────────────────── */
+.wedding-booking-admin-wrap .wedding-booking-rem-status {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin: 14px 0 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--wbook-border);
+  border-left: 4px solid var(--wbook-muted);
+  border-radius: var(--wbook-radius-sm);
+  background: #f8f8f7;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-status.is-ok {
+  border-left-color: #1a9e4b;
+  background: #f4fbf6;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-status.is-warn {
+  border-left-color: #dba617;
+  background: #fcf9e8;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-status-main {
+  flex: 1;
+  min-width: 0;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-status-title {
+  display: block;
+  font-size: 13.5px;
+  color: var(--wbook-ink);
+  margin-bottom: 6px;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-status-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--wbook-sub);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-status-list li {
+  margin: 0;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-status-warn {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  color: #8a6100;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-run-msg {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-run-msg:empty {
+  display: none;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-run-msg.wedding-booking-ok {
+  color: #147a3d;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-run-msg.wedding-booking-err {
+  color: #b32d2e;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-status-actions .button {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-rem-rules {
+  display: grid;
+  gap: 12px;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-rule {
+  padding: 14px 16px;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius-sm);
+  background: #fff;
+  transition: background 0.15s ease;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-rule.is-off {
+  background: #fafafa;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-fields {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 0 46px;
+  transition: opacity 0.15s ease;
+}
+/* Fields stay editable while the switch is off (so their values still
+   save), just visually parked. */
+.wedding-booking-admin-wrap .wedding-booking-rem-rule.is-off .wedding-booking-rem-fields {
+  opacity: 0.5;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  color: var(--wbook-ink);
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-inline input[type="number"] {
+  width: 64px;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-inline input[type="checkbox"] {
+  margin: 0 2px 0 0;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-hint {
+  color: var(--wbook-muted);
+  font-size: 12px;
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-fields .description {
+  margin: 0;
+  color: var(--wbook-muted);
+}
+.wedding-booking-admin-wrap .wedding-booking-rem-note {
+  margin: 12px 0 0;
+}
+
+@media (max-width: 782px) {
+  .wedding-booking-admin-wrap .wedding-booking-rem-status {
+    flex-direction: column;
+  }
+  .wedding-booking-admin-wrap .wedding-booking-rem-fields {
+    margin-left: 0;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   1.5.0 — All Bookings (list, calendar, dialogs), Add booking,
+   new Settings cards
+══════════════════════════════════════════════════════════════ */
+
+/* Status badges for the 1.5.0 statuses */
+.wbook-badge-awaiting_payment {
+  background: #fdf3dc;
+  color: #8a5a00;
+}
+
+.wbook-stat-amber .dashicons {
+  background: #fdf3dc;
+  color: #8a5a00;
+}
+
+.wedding-booking-muted {
+  color: var(--wbook-muted);
+}
+
+/* ── Toolbar: List | Calendar, Export, Add ── */
+.wedding-booking-bk-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 18px 0 0;
+}
+
+.wedding-booking-viewswitch {
+  display: inline-flex;
+  padding: 4px;
+  gap: 4px;
+  background: #fff;
+  border: 1px solid var(--wbook-border);
+  border-radius: 10px;
+  box-shadow: var(--wbook-shadow);
+}
+
+.wedding-booking-viewswitch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--wbook-sub);
+  text-decoration: none;
+}
+
+.wedding-booking-viewswitch-btn .dashicons {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.wedding-booking-viewswitch-btn:hover,
+.wedding-booking-viewswitch-btn:focus {
+  background: var(--wbook-teal-light);
+  color: var(--wbook-teal-dark);
+  box-shadow: none;
+}
+
+.wedding-booking-viewswitch-btn.is-active {
+  background: var(--wbook-teal);
+  color: #fff;
+}
+
+.wedding-booking-bk-toolbar-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-bk-toolbar-actions .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wedding-booking-bk-toolbar-actions .dashicons {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+/* ── Filters ── */
+.wedding-booking-bk-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px 12px;
+  margin: 10px 0 0;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius);
+  box-shadow: var(--wbook-shadow);
+}
+
+.wedding-booking-bk-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.wedding-booking-bk-filter label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--wbook-muted);
+}
+
+.wedding-booking-bk-filter-search {
+  flex: 1 1 240px;
+}
+
+.wedding-booking-bk-filter-search input {
+  width: 100%;
+}
+
+.wedding-booking-bk-filter select {
+  max-width: 220px;
+}
+
+.wedding-booking-bk-filter-actions {
+  flex-direction: row;
+  gap: 6px;
+}
+
+.wedding-booking-bk-resultbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--wbook-sub);
+}
+
+.wedding-booking-bk-resultbar.is-bottom {
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.wedding-booking-pagination {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.wedding-booking-pagination .page-numbers {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius-sm);
+  background: #fff;
+  color: var(--wbook-sub);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.wedding-booking-pagination a.page-numbers:hover,
+.wedding-booking-pagination a.page-numbers:focus {
+  border-color: var(--wbook-teal);
+  color: var(--wbook-teal-dark);
+  box-shadow: none;
+}
+
+.wedding-booking-pagination .page-numbers.current {
+  background: var(--wbook-teal);
+  border-color: var(--wbook-teal);
+  color: #fff;
+  font-weight: 600;
+}
+
+.wedding-booking-pagination .page-numbers.dots {
+  border-color: transparent;
+  background: transparent;
+}
+
+/* ── Table cells ── */
+.wedding-booking-bk-table .wedding-booking-col-client {
+  min-width: 190px;
+}
+
+.wedding-booking-bk-table .wedding-booking-col-session {
+  min-width: 150px;
+}
+
+.wedding-booking-bk-table .wedding-booking-col-id {
+  width: 44px;
+  color: var(--wbook-muted);
+}
+
+.wedding-booking-col-session .wedding-booking-session-date {
+  display: block;
+  color: var(--wbook-ink);
+  white-space: nowrap;
+}
+
+.wedding-booking-col-session .wedding-booking-session-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--wbook-teal-dark);
+  font-weight: 600;
+}
+
+.wedding-booking-col-session .wedding-booking-session-time .dashicons {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+.wedding-booking-col-session .wedding-booking-booked-on {
+  display: block;
+  margin-top: 3px;
+  font-size: 11.5px;
+}
+
+.wedding-booking-req-pill {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #f3e8ff;
+  color: #6b2fb3;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.wedding-booking-pkg-deposit {
+  color: var(--wbook-teal-dark) !important;
+  font-weight: 600;
+}
+
+/* Row menu: icons and the collapsed WooCommerce section */
+.wedding-booking-payment-quick .button .dashicons {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  margin: 0 6px 0 0;
+  vertical-align: -3px;
+}
+
+.wedding-booking-act-record {
+  color: var(--wbook-teal-dark) !important;
+  font-weight: 600;
+}
+
+label.wedding-booking-row-actions-label {
+  display: block;
+}
+
+.wedding-booking-row-actions-adv > summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--wbook-sub);
+  list-style-position: inside;
+}
+
+.wedding-booking-row-actions-adv[open] > summary {
+  margin-bottom: 8px;
+}
+
+.wedding-booking-row-actions-adv .wedding-booking-row-actions-label {
+  margin-top: 8px;
+}
+
+.wedding-booking-adv-note {
+  margin: 0 0 4px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--wbook-muted);
+}
+
+/* ── Calendar view ── */
+.wedding-booking-bcal {
+  margin-top: 14px;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius);
+  box-shadow: var(--wbook-shadow);
+}
+
+.wedding-booking-bcal-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-bcal-title {
+  margin: 0;
+  min-width: 170px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--wbook-ink);
+}
+
+.wedding-booking-bcal-count {
+  margin-left: auto;
+  font-size: 12.5px;
+  color: var(--wbook-muted);
+}
+
+.wedding-booking-bcal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.wedding-booking-bcal-dh {
+  padding: 4px 0;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--wbook-muted);
+}
+
+.wedding-booking-bcal-dh abbr {
+  text-decoration: none;
+  border: 0;
+}
+
+.wedding-booking-bcal-day {
+  min-height: 96px;
+  min-width: 0;
+  padding: 6px;
+  border: 1px solid #e4e7ea;
+  border-radius: 8px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.wedding-booking-bcal-day.is-out {
+  border-color: transparent;
+  background: #fafafa;
+}
+
+.wedding-booking-bcal-day.is-past {
+  background: #fafbfb;
+}
+
+.wedding-booking-bcal-day.is-past .wedding-booking-bcal-num {
+  color: var(--wbook-muted);
+}
+
+.wedding-booking-bcal-day.is-today {
+  border-color: var(--wbook-teal);
+  box-shadow: inset 0 0 0 1px var(--wbook-teal);
+}
+
+.wedding-booking-bcal-day.is-blocked {
+  background: repeating-linear-gradient(135deg, #fff8ec, #fff8ec 6px, #fff1dc 6px, #fff1dc 12px);
+  border-color: #f0ce93;
+}
+
+.wedding-booking-bcal-dayhead {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.wedding-booking-bcal-dow {
+  display: none;
+}
+
+.wedding-booking-bcal-num {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--wbook-ink);
+}
+
+.wedding-booking-bcal-day.is-today .wedding-booking-bcal-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--wbook-teal);
+  color: #fff;
+}
+
+.wedding-booking-bcal-tag {
+  margin-left: auto;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.7;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.wedding-booking-bcal-tag.is-blocked {
+  background: #fff4e0;
+  color: #8a5a00;
+}
+
+.wedding-booking-bcal-tag.is-full {
+  background: #fdecec;
+  color: #a02222;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-bcal-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 3px;
+}
+
+.wedding-booking-bcal-list li {
+  margin: 0;
+}
+
+.wedding-booking-bcal-bk {
+  display: block;
+  width: 100%;
+  padding: 3px 6px;
+  border: 0;
+  border-left: 3px solid currentColor;
+  border-radius: 4px;
+  background: #eef1f3;
+  color: var(--wbook-ink);
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.wedding-booking-bcal-bk:hover,
+.wedding-booking-bcal-bk:focus-visible {
+  filter: brightness(0.96);
+  outline: 2px solid var(--wbook-teal);
+  outline-offset: 0;
+}
+
+.wedding-booking-bcal-bk .wedding-booking-bcal-time {
+  font-weight: 700;
+}
+
+.wedding-booking-bcal-bk.is-awaiting_payment {
+  background: #fdf3dc;
+  color: #8a5a00;
+}
+
+.wedding-booking-bcal-bk.is-pending_payment {
+  background: #eef1ff;
+  color: #3b47b8;
+}
+
+.wedding-booking-bcal-bk.is-confirmed {
+  background: #e7f6ec;
+  color: #147a3d;
+}
+
+.wedding-booking-bcal-bk.is-completed {
+  background: #e7f0fa;
+  color: #1d5b9f;
+}
+
+.wedding-booking-bcal-bk.is-cancelled {
+  background: #f6f7f7;
+  color: #8c8f94;
+  text-decoration: line-through;
+}
+
+.wedding-booking-bcal-bk .wedding-booking-bcal-name {
+  color: var(--wbook-ink);
+}
+
+.wedding-booking-bcal-bk.is-cancelled .wedding-booking-bcal-name {
+  color: #8c8f94;
+}
+
+.wedding-booking-leg-dot.is-awaiting_payment {
+  background: #e7b24a;
+  border-color: #e7b24a;
+}
+
+.wedding-booking-leg-dot.is-pending_payment {
+  background: #5b67d6;
+  border-color: #5b67d6;
+}
+
+.wedding-booking-leg-dot.is-confirmed {
+  background: #1a9e4b;
+  border-color: #1a9e4b;
+}
+
+.wedding-booking-leg-dot.is-completed {
+  background: #2f74c0;
+  border-color: #2f74c0;
+}
+
+.wedding-booking-leg-dot.is-cancelled {
+  background: #c3c4c7;
+  border-color: #c3c4c7;
+}
+
+/* ── View window ── */
+.wedding-booking-mv-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 0 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--wbook-border-soft);
+}
+
+.wedding-booking-mv-when {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+}
+
+.wedding-booking-mv-when strong {
+  font-size: 17px;
+  color: var(--wbook-ink);
+}
+
+.wedding-booking-mv-sub {
+  font-size: 13px;
+  color: var(--wbook-sub);
+}
+
+.wedding-booking-mv-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-mv-actions .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+}
+
+.wedding-booking-mv-actions .dashicons {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.wedding-booking-mv-section {
+  margin: 0 0 14px;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-mv-title {
+  margin: 0 0 2px;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--wbook-muted);
+}
+
+.wedding-booking-mv-request {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border: 1px solid #d8c2f2;
+  border-radius: var(--wbook-radius);
+  background: #faf5ff;
+}
+
+.wedding-booking-mv-request-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  color: #6b2fb3;
+}
+
+.wedding-booking-mv-request-head span:last-child {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--wbook-muted);
+}
+
+.wedding-booking-mv-request-date,
+.wedding-booking-mv-request-msg {
+  margin: 6px 0 0;
+  color: var(--wbook-ink);
+  white-space: pre-wrap;
+}
+
+.wedding-booking-mv-request-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.wedding-booking-mv-terms-toggle {
+  margin-top: 8px;
+}
+
+.wedding-booking-mv-terms {
+  margin-top: 8px;
+  max-height: 260px;
+  overflow: auto;
+  padding: 10px 14px;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius-sm);
+  background: #fbfbfc;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.wedding-booking-mv-terms h4 {
+  margin: 0 0 6px;
+}
+
+.wedding-booking-mv-note {
+  margin: 6px 0 0;
+}
+
+.wedding-booking-mv-gcal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 0 0;
+}
+
+.wedding-booking-mv-gcal .wedding-booking-gcal-dot {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #c3c4c7;
+}
+
+.wedding-booking-mv-gcal .wedding-booking-gcal-dot.is-on {
+  background: #1a9e4b;
+  box-shadow: 0 0 0 3px rgba(26, 158, 75, 0.18);
+}
+
+.wedding-booking-mv-gcal-state {
+  font-size: 13px;
+  color: var(--wbook-sub);
+  margin-right: auto;
+}
+
+.wedding-booking-mv-gcal-msg,
+.wedding-booking-mv-request-msgline {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+}
+
+.wedding-booking-mv-gcal-msg.wedding-booking-ok {
+  color: #147a3d;
+}
+
+.wedding-booking-mv-gcal-msg.wedding-booking-err,
+.wedding-booking-mv-request-msgline {
+  color: #b32d2e;
+}
+
+.wedding-booking-modal-pay-await {
+  border-color: #e7b24a;
+  background: #fffaf0;
+}
+
+.wedding-booking-modal-pay-await .wedding-booking-modal-pay-head {
+  color: #8a5a00;
+}
+
+/* ── Shared dialog (confirm / edit / record payment) ── */
+.wbook-dialog {
+  z-index: 100000;
+}
+
+.wbook-dialog-inner {
+  width: min(520px, 96vw);
+}
+
+.wbook-dialog.is-form .wbook-dialog-inner {
+  width: min(640px, 96vw);
+}
+
+.wbook-dialog.is-danger .wbook-modal-head {
+  background: #fdf3f3;
+  color: #8a1f1f;
+}
+
+.wbook-dialog-body {
+  padding: 16px 18px 6px;
+}
+
+.wbook-dialog-text {
+  margin: 0 0 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--wbook-ink);
+}
+
+.wbook-dialog-note {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--wbook-muted);
+}
+
+.wbook-dialog-text.wbook-dialog-warn {
+  padding: 8px 12px;
+  border-radius: var(--wbook-radius-sm);
+  background: #fcf9e8;
+  font-size: 13px;
+  color: #8a6100;
+}
+
+.wbook-dialog-msg {
+  margin: 8px 0 0;
+  min-height: 1em;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.wbook-dialog-msg.wedding-booking-ok {
+  color: #147a3d;
+}
+
+.wbook-dialog-msg.wedding-booking-err {
+  color: #b32d2e;
+}
+
+.wbook-dialog-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--wbook-ink);
+}
+
+.wbook-dialog-check input {
+  margin: 0;
+}
+
+.wbook-dialog-amount {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--wbook-teal);
+  border-radius: var(--wbook-radius);
+  background: var(--wbook-teal-light);
+}
+
+.wbook-dialog-amount span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--wbook-teal-dark);
+}
+
+.wbook-dialog-amount strong {
+  font-size: 22px;
+  color: var(--wbook-ink);
+}
+
+.wbook-dialog-amount small {
+  color: var(--wbook-sub);
+}
+
+.wbook-dialog-body .wedding-booking-field input[type="text"],
+.wbook-dialog-body .wedding-booking-field input[type="email"],
+.wbook-dialog-body .wedding-booking-field input[type="tel"],
+.wbook-dialog-body .wedding-booking-field input[type="date"],
+.wbook-dialog-body .wedding-booking-field select,
+.wbook-dialog-body .wedding-booking-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.wbook-dialog-foot {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 18px 16px;
+  border-top: 1px solid var(--wbook-border-soft);
+}
+
+.wbook-dialog-foot .button {
+  margin: 0;
+}
+
+.wedding-booking-admin-wrap .wbook-dialog-foot .wbook-dialog-danger {
+  background: #b32d2e;
+  border-color: #8a1f1f;
+  color: #fff;
+}
+
+.wedding-booking-admin-wrap .wbook-dialog-foot .wbook-dialog-danger:hover,
+.wedding-booking-admin-wrap .wbook-dialog-foot .wbook-dialog-danger:focus {
+  background: #8a1f1f;
+  border-color: #8a1f1f;
+  color: #fff;
+}
+
+.wedding-booking-invalid,
+.wedding-booking-admin-wrap input.wedding-booking-invalid,
+.wedding-booking-admin-wrap select.wedding-booking-invalid {
+  border-color: #d63638 !important;
+  box-shadow: 0 0 0 2px rgba(214, 54, 56, 0.15) !important;
+}
+
+/* ── Add booking ── */
+.wedding-booking-backlink {
+  margin: 12px 0 0;
+}
+
+.wedding-booking-backlink a {
+  text-decoration: none;
+}
+
+.wedding-booking-addbk-card .wedding-booking-form-title {
+  margin-top: 22px;
+}
+
+.wedding-booking-addbk-card .wedding-booking-form-title:first-of-type {
+  margin-top: 0;
+}
+
+.wedding-booking-field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--wbook-sub);
+  margin-bottom: 6px;
+}
+
+.wedding-booking-addbk-form .wedding-booking-field input[type="date"],
+.wedding-booking-addbk-form .wedding-booking-field input[type="tel"],
+.wedding-booking-addbk-form .wedding-booking-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.wedding-booking-addbk-datemsg {
+  margin: -4px 0 0;
+  min-height: 1em;
+  font-size: 12.5px;
+}
+
+.wedding-booking-addbk-datemsg.wedding-booking-ok,
+.wedding-booking-addbk-couponmsg.wedding-booking-ok {
+  color: #147a3d;
+}
+
+.wedding-booking-addbk-datemsg.wedding-booking-err,
+.wedding-booking-addbk-couponmsg.wedding-booking-err {
+  color: #b32d2e;
+}
+
+.wedding-booking-addbk-couponmsg {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+}
+
+.wedding-booking-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 10px;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius-sm);
+  background: #fff;
+  max-width: 560px;
+}
+
+.wedding-booking-checklist-inline {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.wedding-booking-checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 2px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.wedding-booking-checklist-inline .wedding-booking-checklist-item {
+  padding: 2px 0;
+}
+
+.wedding-booking-checklist-item input {
+  margin: 0;
+}
+
+.wedding-booking-checklist-item code {
+  font-size: 11px;
+  padding: 1px 5px;
+  color: var(--wbook-muted);
+  background: #f6f7f7;
+}
+
+.wedding-booking-paystate {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 0;
+  border: 0;
+}
+
+.wedding-booking-paystate-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius);
+  background: #fff;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.wedding-booking-paystate-opt:hover {
+  border-color: var(--wbook-teal);
+}
+
+.wedding-booking-paystate-opt.is-checked {
+  border-color: var(--wbook-teal);
+  background: var(--wbook-teal-light);
+  box-shadow: inset 0 0 0 1px var(--wbook-teal);
+}
+
+.wedding-booking-paystate-opt input {
+  margin: 2px 0 0;
+}
+
+.wedding-booking-paystate-opt > span {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* The hidden attribute must win over the grid/flex display rules. */
+.wedding-booking-addbk-form [hidden],
+.wbook-dialog [hidden],
+.wedding-booking-mv-terms[hidden] {
+  display: none !important;
+}
+
+.wedding-booking-paystate-opt strong {
+  font-size: 13px;
+  color: var(--wbook-ink);
+}
+
+.wedding-booking-paystate-opt small {
+  font-size: 12px;
+  color: var(--wbook-muted);
+  line-height: 1.4;
+}
+
+.wedding-booking-addbk-pay .wedding-booking-form-grid {
+  margin-bottom: 12px;
+}
+
+.wedding-booking-addbk-summary {
+  max-width: 460px;
+  margin: 6px 0 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius);
+  background: #fbfbfc;
+  transition: opacity 0.15s ease;
+}
+
+.wedding-booking-addbk-summary.is-loading {
+  opacity: 0.55;
+}
+
+.wedding-booking-addbk-summary p {
+  margin: 0;
+}
+
+.wedding-booking-addbk-lines {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.wedding-booking-addbk-lines th,
+.wedding-booking-addbk-lines td {
+  padding: 5px 0;
+  font-size: 13px;
+  font-weight: 400;
+  text-align: left;
+  color: var(--wbook-sub);
+  border-bottom: 1px solid var(--wbook-border-soft);
+}
+
+.wedding-booking-addbk-lines td {
+  text-align: right;
+  white-space: nowrap;
+  padding-left: 12px;
+}
+
+.wedding-booking-addbk-lines tr:last-child th,
+.wedding-booking-addbk-lines tr:last-child td {
+  border-bottom: 0;
+}
+
+.wedding-booking-addbk-lines tr.is-strong th,
+.wedding-booking-addbk-lines tr.is-strong td {
+  font-weight: 700;
+  color: var(--wbook-ink);
+}
+
+.wedding-booking-addbk-lines tr.is-paid td {
+  color: #147a3d;
+}
+
+.wedding-booking-addbk-lines tr.is-due td {
+  color: #8a5a00;
+}
+
+/* ── Settings: new cards ── */
+.wedding-booking-inline-num {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  color: var(--wbook-ink);
+}
+
+.wedding-booking-admin-wrap .wedding-booking-inline-num input[type="number"] {
+  width: 76px;
+}
+
+.wedding-booking-set-sub {
+  margin: 10px 0 0 46px;
+}
+
+.wedding-booking-set-warn {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 8px 12px;
+  border-radius: var(--wbook-radius-sm);
+  background: #fcf9e8;
+  color: #8a6100;
+}
+
+.wedding-booking-set-warn .dashicons {
+  color: #dba617;
+  flex: 0 0 auto;
+}
+
+.wedding-booking-set-danger {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  border: 1px solid #f0b8b8;
+  border-radius: var(--wbook-radius-sm);
+  background: #fdf3f3;
+  color: #8a1f1f;
+  line-height: 1.55;
+  max-width: 640px;
+}
+
+.wedding-booking-set-danger .dashicons {
+  color: #d63638;
+  flex: 0 0 auto;
+}
+
+.wedding-booking-admin-wrap .card.wedding-booking-danger-card > h2::before,
+.wedding-booking-admin-wrap .card.wedding-booking-danger-card > h3::before {
+  background: linear-gradient(180deg, #d63638, #8a1f1f);
+}
+
+/* ── Responsive ── */
+@media (max-width: 960px) {
+  .wedding-booking-bk-table {
+    min-width: 980px;
+  }
+
+  .wedding-booking-paystate {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 782px) {
+  .wedding-booking-bk-toolbar {
+    align-items: stretch;
+  }
+
+  .wedding-booking-viewswitch {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .wedding-booking-viewswitch-btn {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+
+  .wedding-booking-bk-toolbar-actions {
+    width: 100%;
+  }
+
+  .wedding-booking-admin-wrap .wedding-booking-bk-toolbar-actions .button {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+
+  .wedding-booking-bk-filter,
+  .wedding-booking-bk-filter-search {
+    flex: 1 1 100%;
+  }
+
+  .wedding-booking-bk-filter select,
+  .wedding-booking-bk-filter input {
+    max-width: none;
+    width: 100%;
+  }
+
+  .wedding-booking-bk-filter-date {
+    flex: 1 1 calc(50% - 6px);
+  }
+
+  /* Calendar becomes an agenda: days with sessions (and today) only. */
+  .wedding-booking-bcal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wedding-booking-bcal-dh,
+  .wedding-booking-bcal-day.is-out,
+  .wedding-booking-bcal-day.is-empty:not(.is-today):not(.is-blocked) {
+    display: none;
+  }
+
+  .wedding-booking-bcal-day {
+    min-height: 0;
+  }
+
+  .wedding-booking-bcal-dow {
+    display: inline;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--wbook-sub);
+    order: 2;
+  }
+
+  .wedding-booking-bcal-num {
+    order: 1;
+  }
+
+  .wedding-booking-bcal-tag {
+    order: 3;
+  }
+
+  .wedding-booking-bcal-bk {
+    font-size: 13px;
+    padding: 6px 8px;
+    white-space: normal;
+  }
+
+  .wedding-booking-bcal-count {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .wedding-booking-set-sub {
+    margin-left: 0;
+  }
+
+  .wbook-dialog-foot .button {
+    flex: 1 1 auto;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Organised admin (1.6.0): grouped top nav, help tips, Settings
+   sections with a side menu, save bar, setup checklist.
+══════════════════════════════════════════════════════════════ */
+
+/* ── Top nav groups ── */
+.wbook-tab-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+.wbook-tab-sep {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 22px;
+  margin: 0 6px;
+  background: var(--wbook-border);
+}
+
+/* ── Help tips: the "?" button ── */
+.wedding-booking-tip-wrap {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-tip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: none;
+  color: #a0a5aa;
+  cursor: help;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-tip .dashicons {
+  width: 17px;
+  height: 17px;
+  font-size: 17px;
+  line-height: 17px;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-tip:hover,
+.wedding-booking-admin-wrap .wedding-booking-tip.is-open {
+  color: var(--wbook-teal);
+  background: var(--wbook-teal-light);
+}
+
+.wedding-booking-admin-wrap .wedding-booking-tip:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-tip:focus-visible {
+  outline: 2px solid var(--wbook-teal);
+  outline-offset: 1px;
+}
+
+/* ── Help tips: the shared bubble (appended to <body>, so no tokens) ── */
+.wedding-booking-tip-bubble {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100100;
+  box-sizing: border-box;
+  max-width: min(320px, calc(100vw - 16px));
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: #1d2327;
+  color: #f0f0f1;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu,
+    Cantarell, "Helvetica Neue", sans-serif;
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.55;
+  text-align: left;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: normal;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+  opacity: 0;
+  transform: translateY(2px);
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease;
+}
+
+.wedding-booking-tip-bubble.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.wedding-booking-tip-bubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: var(--wedding-booking-tip-arrow, 50%);
+  margin-left: -6px;
+  border: 6px solid transparent;
+  border-top-color: #1d2327;
+}
+
+.wedding-booking-tip-bubble.is-below::after {
+  top: auto;
+  bottom: 100%;
+  border-top-color: transparent;
+  border-bottom-color: #1d2327;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wedding-booking-tip-bubble {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* ── Labels that carry a tip ── */
+.wedding-booking-th {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px 4px;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-field .wedding-booking-label-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-field .wedding-booking-label-row label {
+  display: inline;
+  margin: 0;
+}
+
+.wedding-booking-toggle-row,
+.wedding-booking-th-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* WP's small-screen form CSS makes the first <label> in a settings cell
+   inline-block and resizes checkboxes, which collapsed the switch track
+   to nothing. Keep the switch a flex row with a hidden input. */
+.wedding-booking-admin-wrap .form-table td .wedding-booking-toggle,
+.wedding-booking-admin-wrap .wedding-booking-rem-rule .wedding-booking-toggle {
+  display: inline-flex;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-toggle .wedding-booking-toggle-track {
+  display: block;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-toggle input[type="checkbox"] {
+  width: 0;
+  min-width: 0;
+  height: 0;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-rem-head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wedding-booking-admin-wrap .subsubsub li.wedding-booking-filter-help {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 2px;
+}
+
+.wedding-booking-ccf-heading .wedding-booking-tip-wrap {
+  margin-left: -5px;
+}
+
+/* ── Rows that only matter while another setting is on ── */
+.wedding-booking-admin-wrap tr[data-wedding-booking-requires] > th .wedding-booking-th,
+.wedding-booking-admin-wrap tr[data-wedding-booking-requires] > td,
+.wedding-booking-admin-wrap .wedding-booking-set-sub[data-wedding-booking-requires] {
+  transition: opacity 0.15s ease;
+}
+
+.wedding-booking-admin-wrap tr.is-parked > th .wedding-booking-th,
+.wedding-booking-admin-wrap tr.is-parked > td,
+.wedding-booking-admin-wrap .wedding-booking-set-sub.is-parked {
+  opacity: 0.5;
+}
+
+.wedding-booking-parked-note {
+  display: none;
+  margin-top: 4px;
+  font-size: 11.5px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #8a6100;
+}
+
+.wedding-booking-admin-wrap tr.is-parked .wedding-booking-parked-note {
+  display: block;
+}
+
+/* ── Settings: side menu + sections ── */
+.wedding-booking-admin-wrap .wedding-booking-settings-page.wedding-booking-set-layout {
+  max-width: none;
+  display: grid;
+  grid-template-columns: 236px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  margin-top: 18px;
+}
+
+.wedding-booking-set-nav {
+  position: sticky;
+  top: 104px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.wedding-booking-set-search {
+  position: relative;
+}
+
+.wedding-booking-set-search .dashicons {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  width: 17px;
+  height: 17px;
+  font-size: 17px;
+  color: var(--wbook-muted);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-set-search input[type="search"] {
+  width: 100%;
+  min-height: 36px;
+  box-sizing: border-box;
+  padding: 6px 10px 6px 33px;
+  border: 1px solid var(--wbook-border);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: var(--wbook-shadow);
+}
+
+.wedding-booking-admin-wrap .wedding-booking-set-search input[type="search"]:focus {
+  border-color: var(--wbook-teal);
+  box-shadow: 0 0 0 1px var(--wbook-teal);
+}
+
+.wedding-booking-set-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: #fff;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius);
+  box-shadow: var(--wbook-shadow);
+}
+
+.wedding-booking-set-nav-list li {
+  margin: 0;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-set-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  color: var(--wbook-sub);
+  text-decoration: none;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-set-nav-link:hover,
+.wedding-booking-admin-wrap .wedding-booking-set-nav-link:focus {
+  background: var(--wbook-teal-light);
+  color: var(--wbook-teal-dark);
+  box-shadow: none;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-set-nav-link:focus-visible {
+  outline: 2px solid var(--wbook-teal);
+  outline-offset: 1px;
+}
+
+.wedding-booking-set-nav-link .dashicons {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  color: var(--wbook-muted);
+}
+
+.wedding-booking-set-nav-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.wedding-booking-set-nav-label {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--wbook-ink);
+}
+
+.wedding-booking-set-nav-hint {
+  overflow: hidden;
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--wbook-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-set-nav-link.is-active {
+  background: var(--wbook-teal);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(61, 107, 120, 0.35);
+}
+
+.wedding-booking-set-nav-link.is-active .dashicons,
+.wedding-booking-set-nav-link.is-active .wedding-booking-set-nav-label {
+  color: #fff;
+}
+
+.wedding-booking-set-nav-link.is-active .wedding-booking-set-nav-hint {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.wedding-booking-admin-wrap .wedding-booking-set-nav-link.is-dim {
+  opacity: 0.4;
+}
+
+/* While searching every section shows, so none is "the current one". */
+.wedding-booking-admin-wrap .wedding-booking-set-layout.is-searching .wedding-booking-set-nav-link.is-active {
+  background: transparent;
+  color: var(--wbook-sub);
+  box-shadow: none;
+}
+
+.wedding-booking-set-layout.is-searching .wedding-booking-set-nav-link.is-active .dashicons,
+.wedding-booking-set-layout.is-searching .wedding-booking-set-nav-link.is-active .wedding-booking-set-nav-hint {
+  color: var(--wbook-muted);
+}
+
+.wedding-booking-set-layout.is-searching .wedding-booking-set-nav-link.is-active .wedding-booking-set-nav-label {
+  color: var(--wbook-ink);
+}
+
+.wedding-booking-set-nav-badge {
+  flex: 0 0 auto;
+  padding: 4px 7px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  background: var(--wbook-border-soft);
+  color: var(--wbook-sub);
+}
+
+.wedding-booking-set-nav-badge.is-warn {
+  background: #fcf0d4;
+  color: #8a6100;
+}
+
+.wedding-booking-set-nav-badge.is-ok {
+  background: #e3f5e9;
+  color: #147a3d;
+}
+
+.wedding-booking-set-nav-link.is-active .wedding-booking-set-nav-badge {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+.wedding-booking-set-main {
+  min-width: 0;
+}
+
+/* One section at a time once JS is running (WP swaps body.no-js for .js
+   before the page paints, so every section never flashes up). */
+.js .wedding-booking-set-layout .wedding-booking-set-panel:not(.is-active) {
+  display: none;
+}
+
+.js .wedding-booking-set-layout.is-searching .wedding-booking-set-panel:not(.is-active) {
+  display: block;
+}
+
+.wedding-booking-set-layout.is-searching .wedding-booking-set-panel + .wedding-booking-set-panel {
+  margin-top: 26px;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-set-layout .wedding-booking-search-miss {
+  display: none !important;
+}
+
+.wedding-booking-set-panel-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin: 0 0 2px;
+}
+
+.wedding-booking-set-panel-head > .dashicons {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  font-size: 22px;
+  line-height: 42px;
+  text-align: center;
+  border-radius: 11px;
+  background: var(--wbook-teal-light);
+  color: var(--wbook-teal-dark);
+}
+
+.wedding-booking-admin-wrap .wedding-booking-set-panel-head h2 {
+  margin: 1px 0 3px;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--wbook-ink);
+}
+
+.wedding-booking-set-panel-head p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--wbook-sub);
+}
+
+.wedding-booking-admin-wrap .wedding-booking-set-panel .card {
+  max-width: none;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-set-panel > .notice {
+  margin: 16px 0 0;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-settings-card {
+  scroll-margin-top: 110px;
+}
+
+.wedding-booking-set-noresults {
+  margin-top: 16px;
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--wbook-muted);
+  border: 1px dashed var(--wbook-border);
+  border-radius: var(--wbook-radius);
+  background: #fbfbfc;
+}
+
+.wedding-booking-set-noresults[hidden] {
+  display: none;
+}
+
+.wedding-booking-set-noresults .dashicons {
+  width: 28px;
+  height: 28px;
+  font-size: 28px;
+}
+
+.wedding-booking-set-pointer {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 10px 14px;
+  border-radius: var(--wbook-radius-sm);
+  background: var(--wbook-gold-light);
+  color: #6b5234;
+}
+
+.wedding-booking-set-pointer .dashicons {
+  flex: 0 0 auto;
+  color: var(--wbook-gold-dark);
+}
+
+/* ── Save bar (Settings and Booking Form) ── */
+.wedding-booking-savebar {
+  position: sticky;
+  bottom: 0;
+  z-index: 15;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-top: 18px;
+  padding: 12px 16px;
+  background: #fff;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius);
+  box-shadow: 0 8px 28px rgba(16, 24, 40, 0.14);
+}
+
+.wedding-booking-savebar-dirty {
+  display: none;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #8a6100;
+}
+
+.wedding-booking-savebar-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #dba617;
+}
+
+.is-dirty .wedding-booking-savebar-dirty {
+  display: inline-flex;
+}
+
+.wedding-booking-savebar-note {
+  font-size: 12.5px;
+  color: var(--wbook-muted);
+}
+
+.is-dirty .wedding-booking-savebar-note {
+  display: none;
+}
+
+.wedding-booking-savebar .wedding-booking-form-msg,
+.wedding-booking-savebar #wedding-booking-settings-msg {
+  margin: 0;
+}
+
+.wedding-booking-savebar .wedding-booking-form-msg:empty {
+  display: none;
+}
+
+.wedding-booking-admin-wrap .wedding-booking-savebar .wedding-booking-savebar-btn {
+  margin-left: auto;
+}
+
+/* ── Setup checklist ── */
+.wedding-booking-admin-wrap .wedding-booking-setup-card.is-complete > h3::before {
+  background: linear-gradient(180deg, #1a9e4b, #147a3d);
+}
+
+.wedding-booking-setup-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0 14px;
+}
+
+.wedding-booking-setup-bar {
+  flex: 1 1 auto;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--wbook-border-soft);
+}
+
+.wedding-booking-setup-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--wbook-gold), var(--wbook-teal));
+}
+
+.wedding-booking-setup-count {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--wbook-sub);
+  white-space: nowrap;
+}
+
+.wedding-booking-setup-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wedding-booking-setup-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius-sm);
+  background: #fff;
+}
+
+.wedding-booking-setup-item.is-done {
+  border-color: #cfe9d8;
+  background: #f6fbf8;
+}
+
+.wedding-booking-setup-icon.dashicons {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  font-size: 22px;
+  color: #c3c4c7;
+}
+
+.wedding-booking-setup-item.is-done .wedding-booking-setup-icon {
+  color: #1a9e4b;
+}
+
+.wedding-booking-setup-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.wedding-booking-setup-title strong {
+  font-size: 13px;
+  color: var(--wbook-ink);
+}
+
+.wedding-booking-setup-item.is-done .wedding-booking-setup-title strong {
+  color: var(--wbook-sub);
+}
+
+.wedding-booking-setup-text small {
+  font-size: 12px;
+  color: var(--wbook-muted);
+  overflow-wrap: anywhere;
+}
+
+.wedding-booking-setup-tag {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+  vertical-align: 1px;
+  background: var(--wbook-border-soft);
+  color: var(--wbook-muted);
+}
+
+.wedding-booking-admin-wrap .wedding-booking-setup-action {
+  flex: 0 0 auto;
+}
+
+.wedding-booking-setup-nudge .dashicons {
+  color: var(--wbook-gold-dark);
+  vertical-align: text-bottom;
+}
+
+/* ── Booking Form page ── */
+.wedding-booking-admin-wrap h2.wedding-booking-group-title {
+  margin: 28px 0 0;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--wbook-muted);
+}
+
+.wedding-booking-flow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 14px 0 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.wedding-booking-flow-step {
+  position: relative;
+  display: flex;
+  flex: 1 1 150px;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 11px 12px 11px 48px;
+  border: 1px solid var(--wbook-border);
+  border-radius: var(--wbook-radius-sm);
+  background: #fff;
+  transition:
+    opacity 0.15s ease,
+    background 0.15s ease;
+}
+
+.wedding-booking-flow-num {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--wbook-teal);
+  color: #fff;
+  transform: translateY(-50%);
+}
+
+.wedding-booking-flow-name {
+  font-weight: 600;
+  color: var(--wbook-ink);
+}
+
+.wedding-booking-flow-step small {
+  font-size: 11.5px;
+  color: var(--wbook-muted);
+}
+
+.wedding-booking-flow-contract.is-off {
+  border-style: dashed;
+  background: #fafafa;
+  opacity: 0.65;
+}
+
+.wedding-booking-flow-contract.is-off .wedding-booking-flow-num {
+  background: var(--wbook-muted);
+}
+
+/* ── Date Slots explainer ── */
+.wedding-booking-howto {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 12px 16px;
+  border: 1px solid var(--wbook-border);
+  border-left: 4px solid var(--wbook-teal);
+  border-radius: var(--wbook-radius-sm);
+  background: #fff;
+}
+
+.wedding-booking-howto > .dashicons {
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: var(--wbook-teal);
+}
+
+.wedding-booking-howto p {
+  margin: 0 0 4px;
+}
+
+.wedding-booking-howto p:last-child {
+  margin: 0;
+  color: var(--wbook-sub);
+}
+
+/* ── Responsive ── */
+@media (max-width: 960px) {
+  .wedding-booking-admin-wrap .wedding-booking-settings-page.wedding-booking-set-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .wedding-booking-set-nav {
+    position: static;
+  }
+
+  .wedding-booking-set-nav-list {
+    flex-direction: row;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .wedding-booking-admin-wrap .wedding-booking-set-nav-link {
+    padding: 8px 12px;
+    white-space: nowrap;
+  }
+
+  .wedding-booking-set-nav-hint {
+    display: none;
+  }
+
+  .wbook-tab-sep {
+    height: 18px;
+    margin: 0 2px;
+  }
+}
+
+@media (max-width: 782px) {
+  .wedding-booking-savebar {
+    bottom: 0;
+    border-radius: var(--wbook-radius) var(--wbook-radius) 0 0;
+  }
+
+  .wedding-booking-savebar-note {
+    display: none;
+  }
+
+  .wedding-booking-admin-wrap .wedding-booking-savebar .wedding-booking-savebar-btn {
+    flex: 1 1 100%;
+    justify-content: center;
+    margin-left: 0;
+  }
+
+  /* The action button drops under the text; icon + text stay side by side. */
+  .wedding-booking-setup-item {
+    flex-wrap: wrap;
+  }
+
+  .wedding-booking-setup-text {
+    flex: 1 1 calc(100% - 34px);
+  }
+
+  .wedding-booking-admin-wrap .wedding-booking-setup-action {
+    margin-left: 34px;
+  }
+}
