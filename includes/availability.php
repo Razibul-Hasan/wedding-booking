@@ -147,6 +147,76 @@ function wedding_booking_occupancy($from, $to = '', $exclude_order_id = 0, $excl
 }
 
 /**
+ * Whether Wedding Booking and the SnapBook plugin share one calendar. The
+ * switch lives in SnapBook (SnapBook → Settings → Availability → "Shared
+ * calendar"); off or without SnapBook, each plugin books its dates separately.
+ *
+ * Sharing only changes what the two plugins read: neither ever writes the
+ * other's Date Slots marks, so switching it off separates them again at once.
+ */
+function wedding_booking_share_calendar_enabled()
+{
+    return function_exists('snapbook_share_calendar_enabled') && snapbook_share_calendar_enabled();
+}
+
+/**
+ * SnapBook's bookings and holds per date, plus its own "booked" (full) /
+ * "blocked" (closed) Date Slots marks. Empty while the calendar isn't shared.
+ *
+ * @return array date => ['count' => int, 'times' => ['HH:MM' => int], 'mark' => ''|'booked'|'blocked']
+ */
+function wedding_booking_shared_occupancy($from, $to = '')
+{
+    if (! wedding_booking_share_calendar_enabled() || ! function_exists('snapbook_occupancy')) {
+        return [];
+    }
+
+    $out = [];
+    foreach ((array) snapbook_occupancy($from, $to) as $date => $day) {
+        $out[$date] = [
+            'count' => (int) ($day['count'] ?? 0),
+            'times' => (array) ($day['times'] ?? []),
+            'mark'  => '',
+        ];
+    }
+
+    global $wpdb;
+    $sql  = "SELECT date_str, status FROM {$wpdb->prefix}fpb_dates WHERE status IN ('booked','blocked') AND date_str >= %s";
+    $args = [$from];
+    if ($to !== '') {
+        $sql   .= ' AND date_str <= %s';
+        $args[] = $to;
+    }
+    foreach ((array) $wpdb->get_results($wpdb->prepare($sql, $args)) as $mark) { // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- table name from the prefix; values are placeholders.
+        $date = (string) $mark->date_str;
+        if (! isset($out[$date])) {
+            $out[$date] = ['count' => 0, 'times' => [], 'mark' => ''];
+        }
+        $out[$date]['mark'] = (string) $mark->status;
+    }
+
+    return $out;
+}
+
+/**
+ * Add SnapBook's bookings (wedding_booking_shared_occupancy()) to ours.
+ */
+function wedding_booking_add_shared_occupancy(array $occupancy, array $shared)
+{
+    foreach ($shared as $date => $day) {
+        if (! isset($occupancy[$date])) {
+            $occupancy[$date] = ['count' => 0, 'times' => []];
+        }
+        $occupancy[$date]['count'] += $day['count'];
+        foreach ($day['times'] as $time => $n) {
+            $occupancy[$date]['times'][$time] = ($occupancy[$date]['times'][$time] ?? 0) + (int) $n;
+        }
+    }
+
+    return $occupancy;
+}
+
+/**
  * The booking-window rules for a date: a real date, not past, not inside the
  * minimum notice, not beyond the furthest bookable day, not a closed weekday.
  *
@@ -231,11 +301,17 @@ function wedding_booking_validate_booking_date($date, $exclude_order_id = 0, $ti
     // "booked" = full (Wedding Booking keeps it in step with the bookings, and the
     // studio can set it by hand); "blocked" = closed by the studio.
     $slot = (string) $wpdb->get_var($wpdb->prepare("SELECT status FROM {$wpdb->prefix}wedding_booking_dates WHERE date_str = %s", $date)); // phpcs:ignore
+    // Shared calendar: SnapBook's full or closed day counts too.
+    $shared = wedding_booking_shared_occupancy($date, $date);
+    if ($slot !== 'blocked' && ($shared[$date]['mark'] ?? '') !== '') {
+        $slot = $shared[$date]['mark'];
+    }
     if (in_array($slot, ['booked', 'blocked'], true) && ! $exclude_order_id) {
         return $taken;
     }
 
     $occupancy = wedding_booking_occupancy($date, $date, (int) $exclude_order_id, wedding_booking_clean_hold_token($hold_token));
+    $occupancy = wedding_booking_add_shared_occupancy($occupancy, $shared);
     $day       = $occupancy[$date] ?? ['count' => 0, 'times' => []];
     if ($slot === 'blocked') {
         return $taken;
@@ -351,10 +427,19 @@ function wedding_booking_get_availability_data($hold_token = '')
         $unavailable[(string) $mark->date_str] = (string) $mark->status;
     }
 
-    $capacity = wedding_booking_day_capacity();
-    $slots_on = wedding_booking_slots_enabled();
-    $taken    = [];
-    foreach (wedding_booking_occupancy($rules['today'], $to, 0, wedding_booking_clean_hold_token($hold_token)) as $date => $day) {
+    // Shared calendar: dates SnapBook marked full or closed.
+    $shared = wedding_booking_shared_occupancy($rules['today'], $to);
+    foreach ($shared as $date => $day) {
+        if ($day['mark'] !== '' && ! isset($unavailable[$date])) {
+            $unavailable[$date] = $day['mark'];
+        }
+    }
+
+    $capacity  = wedding_booking_day_capacity();
+    $slots_on  = wedding_booking_slots_enabled();
+    $taken     = [];
+    $occupancy = wedding_booking_occupancy($rules['today'], $to, 0, wedding_booking_clean_hold_token($hold_token));
+    foreach (wedding_booking_add_shared_occupancy($occupancy, $shared) as $date => $day) {
         if ($day['count'] >= $capacity && ! isset($unavailable[$date])) {
             $unavailable[$date] = 'booked';
         }
