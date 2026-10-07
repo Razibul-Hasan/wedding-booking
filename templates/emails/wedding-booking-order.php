@@ -23,6 +23,13 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
+/** @var WC_Order $order Supplied by WooCommerce's wc_get_template(). */
+/** @var string $email_heading */
+/** @var bool $sent_to_admin */
+/** @var bool $plain_text */
+/** @var WC_Email $email */
+/** @var string $additional_content */
+
 $wedding_booking_settings = wedding_booking_get_order_email_settings();
 $wedding_booking_content  = '';
 
@@ -82,7 +89,8 @@ if ($wedding_booking_after_table !== '') {
 }
 
 // Where the customer can see the booking, add it to a calendar or ask for a change.
-if (function_exists('wedding_booking_booking_manage_url') && ! $sent_to_admin) {
+if (function_exists('wedding_booking_booking_manage_url') && ! $sent_to_admin
+    && (! function_exists('wedding_booking_booking_request_url') || wedding_booking_booking_request_url($order) === '')) {
     $wedding_booking_content .= wedding_booking_email_divider(24);
     $wedding_booking_content .= wedding_booking_email_text(
         '<a href="' . esc_url(wedding_booking_booking_manage_url($order)) . '" style="color:' . esc_attr(wedding_booking_email_palette()['accent_dk']) . ';font-weight:600;">' . esc_html__('Manage your booking', 'wedding-booking') . '</a> &mdash; '

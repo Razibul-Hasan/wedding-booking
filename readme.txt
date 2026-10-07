@@ -4,7 +4,7 @@ Tags: booking, photography, woocommerce, appointment, calendar
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.6.1
+Stable tag: 1.6.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,6 +84,21 @@ Any page with the shortcode. Wedding Booking auto-detects it for the package sha
 7. The Booking Form screen, where the steps, the contract step and the sidebar cards are edited.
 
 == Changelog ==
+
+= 1.6.4 =
+* When customer change requests are enabled, booking confirmation emails (custom or standard WooCommerce), balance reminders, and booking-update emails include a direct link to request a reschedule or cancellation. The booking stays unchanged until the studio approves the request.
+
+= 1.6.3 =
+* Customer reschedule and cancellation requests now require an explicit Approve or Decline decision in All Bookings. Pending or declined requests leave the existing booking and date unchanged.
+* Approval of a new date checks availability before moving the booking, WooCommerce order, balance deadline and Google Calendar event. Approval of cancellation closes the booking and unpaid balance; refunds remain a manual studio decision.
+* Customers see whether their request is pending, approved or declined, and receive a decision email. A stale admin window cannot approve a newer request.
+
+= 1.6.2 =
+* Automatic balance reminders, including repeats, now wait until the configured number of days before the photoshoot. Missing or invalid shoot dates are skipped.
+* Delayed reminder checks respect the 09:00-21:00 site-time window. Rescheduling allows a fresh reminder for the new date while preserving reminder history and repeat limits.
+* Fully paid booking-only WooCommerce orders and final-balance orders complete automatically. Deposits and orders containing other products keep their normal status.
+* Confirmed booking payments queue Google Calendar sync, including offline payments recorded later and final balance payments. Existing linked events are updated.
+* Standard WooCommerce checkout now passes the selected start time and hold token to availability validation.
 
 = 1.6.1 =
 * **Send a payment reminder right away:** the booking View window now has a **Send reminder now** button in its Balance reminders box, for when the remaining balance can't wait for the automatic reminder. It asks first, shows who it goes to, and warns when a reminder already went out in the last 12 hours.
@@ -213,6 +228,15 @@ Any page with the shortcode. Wedding Booking auto-detects it for the package sha
 * Security hardening throughout: nonce verification, output escaping, and input sanitisation.
 
 == Upgrade Notice ==
+
+= 1.6.4 =
+Customer booking emails now include a direct change-request link when the reschedule/cancel setting is enabled.
+
+= 1.6.3 =
+Customer change requests now have an approval workflow in All Bookings. A request alone never changes the booking.
+
+= 1.6.2 =
+Automatic repeat reminders now respect the photoshoot reminder period. Full payments complete booking orders and queue Google Calendar sync when connected and enabled.
 
 = 1.6.1 =
 Adds a "Send reminder now" button to the booking View window, so you can email a customer about their remaining balance straight away.

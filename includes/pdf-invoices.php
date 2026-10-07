@@ -172,7 +172,7 @@ add_action('wpo_wcpdf_after_order_data', 'wedding_booking_pdf_order_data_rows', 
 function wedding_booking_pdf_order_data_rows($document_type, $order)
 {
     $booking = null;
-    if (! wedding_booking_pdf_applies($document_type, $order, $booking)) {
+    if (! wedding_booking_pdf_applies($document_type, $order, $booking) || ! $booking) {
         return;
     }
 

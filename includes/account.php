@@ -257,6 +257,22 @@ function wedding_booking_account_order_panel($order)
     }
     echo '</dl>';
 
+    $change = $order->get_meta('_wedding_booking_change_request', true);
+    if (is_array($change) && ! empty($change['at'])) {
+        if (empty($change['handled'])) {
+            $change_text = __('Your change request is awaiting studio approval. Your original booking remains in place.', 'wedding-booking');
+        } elseif (($change['decision'] ?? '') === 'approved') {
+            $change_text = __('Your change request was approved. The booking details above show the current date and status.', 'wedding-booking');
+        } elseif (($change['decision'] ?? '') === 'declined') {
+            $change_text = __('Your change request was declined. The booking details above remain in effect.', 'wedding-booking');
+        } else {
+            $change_text = '';
+        }
+        if ($change_text !== '') {
+            echo '<p class="wedding-booking-acct-note" role="status">' . esc_html($change_text) . '</p>';
+        }
+    }
+
     echo '<p class="wedding-booking-acct-buttons">';
     if ($active && $money['pay_url'] !== '') {
         echo '<a class="button alt" href="' . esc_url($money['pay_url']) . '">' . esc_html__('Pay remaining balance', 'wedding-booking') . '</a> ';
@@ -278,17 +294,19 @@ function wedding_booking_account_order_panel($order)
 function wedding_booking_account_request_form($order)
 {
     $last = $order->get_meta('_wedding_booking_change_request', true);
-    if (is_array($last) && ! empty($last['at']) && (time() - (int) $last['at']) < DAY_IN_SECONDS) {
-        echo '<p class="wedding-booking-acct-note">' . esc_html(sprintf(
+    if (is_array($last) && ! empty($last['at']) && empty($last['handled'])) {
+        echo '<p class="wedding-booking-acct-note" id="wedding-booking-change-request">' . esc_html(sprintf(
             /* translators: %s: date and time */
-            __('You sent us a change request on %s. We\'ll be in touch.', 'wedding-booking'),
+            __('You sent us a change request on %s. It is awaiting approval; your current booking stays in place.', 'wedding-booking'),
             wp_date(get_option('date_format') . ' ' . get_option('time_format'), (int) $last['at'])
         )) . '</p>';
         return;
     }
 
     $id = (int) $order->get_id();
-    echo '<details class="wedding-booking-acct-request"><summary>' . esc_html__('Need to reschedule or cancel?', 'wedding-booking') . '</summary>';
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display-only link from a customer email.
+    $open = isset($_GET['wedding_booking_change']) && sanitize_key(wp_unslash($_GET['wedding_booking_change'])) === 'request';
+    echo '<details class="wedding-booking-acct-request" id="wedding-booking-change-request"' . ($open ? ' open' : '') . '><summary>' . esc_html__('Need to reschedule or cancel?', 'wedding-booking') . '</summary>';
     echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
     echo '<input type="hidden" name="action" value="wedding_booking_booking_request">';
     echo '<input type="hidden" name="order_id" value="' . esc_attr($id) . '">';
@@ -301,10 +319,10 @@ function wedding_booking_account_request_form($order)
     echo '<option value="other">' . esc_html__('Something else', 'wedding-booking') . '</option>';
     echo '</select></p>';
     echo '<p class="form-row"><label for="wedding-booking-req-date">' . esc_html__('Preferred new date (if moving)', 'wedding-booking') . '</label>';
-    echo '<input id="wedding-booking-req-date" type="date" name="preferred_date" min="' . esc_attr(wp_date('Y-m-d')) . '"></p>';
+    echo '<input id="wedding-booking-req-date" type="date" name="preferred_date" min="' . esc_attr((new DateTimeImmutable('tomorrow', wp_timezone()))->format('Y-m-d')) . '"></p>';
     echo '<p class="form-row"><label for="wedding-booking-req-msg">' . esc_html__('Message', 'wedding-booking') . ' <span class="required">*</span></label>';
     echo '<textarea id="wedding-booking-req-msg" name="message" rows="4" required maxlength="2000"></textarea></p>';
-    echo '<p class="wedding-booking-acct-note">' . esc_html__('The studio will confirm by email. Cancelling doesn\'t refund payments automatically; our booking terms apply.', 'wedding-booking') . '</p>';
+    echo '<p class="wedding-booking-acct-note">' . esc_html__('Sending a request does not change your booking. The studio must approve it first. Cancelling does not refund payments automatically; our booking terms apply.', 'wedding-booking') . '</p>';
     echo '<p><button type="submit" class="button">' . esc_html__('Send request', 'wedding-booking') . '</button></p>';
     echo '</form></details>';
 }
@@ -328,8 +346,14 @@ function wedding_booking_handle_booking_request()
         wp_die(esc_html__('Please contact the studio directly.', 'wedding-booking'), '', ['response' => 403, 'back_link' => true]);
     }
 
+    global $wpdb;
+    $booking = $wpdb->get_row($wpdb->prepare("SELECT id, status, session_date FROM {$wpdb->prefix}wedding_booking_bookings WHERE order_id = %d LIMIT 1", $order_id)); // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom bookings table.
+    if (! $booking || (string) $booking->status === 'cancelled' || (string) $booking->session_date < wp_date('Y-m-d')) {
+        wp_die(esc_html__('This booking is no longer eligible for a change request.', 'wedding-booking'), '', ['response' => 400, 'back_link' => true]);
+    }
+
     $last = $order->get_meta('_wedding_booking_change_request', true);
-    if (is_array($last) && ! empty($last['at']) && (time() - (int) $last['at']) < DAY_IN_SECONDS) {
+    if (is_array($last) && ! empty($last['at']) && empty($last['handled'])) {
         wp_safe_redirect(add_query_arg('wedding_booking_request', 'sent', wp_get_referer() ? wp_get_referer() : $order->get_view_order_url()) . '#wedding-booking-booking');
         exit;
     }
@@ -342,14 +366,22 @@ function wedding_booking_handle_booking_request()
     $type    = sanitize_key(wp_unslash($_POST['request_type'] ?? 'other'));
     $type    = isset($types[$type]) ? $type : 'other';
     $date    = sanitize_text_field(wp_unslash($_POST['preferred_date'] ?? ''));
-    $date    = preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) ? $date : '';
+    if ($type === 'reschedule') {
+        if (! preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $date, $parts)
+            || ! checkdate((int) $parts[2], (int) $parts[3], (int) $parts[1])
+            || $date <= wp_date('Y-m-d') || $date === (string) $booking->session_date) {
+            wp_die(esc_html__('Please choose a valid new date after today.', 'wedding-booking'), '', ['response' => 400, 'back_link' => true]);
+        }
+    } else {
+        $date = '';
+    }
     $message = trim(sanitize_textarea_field(wp_unslash($_POST['message'] ?? '')));
     if ($message === '') {
         wp_die(esc_html__('Please tell us what you would like to change.', 'wedding-booking'), '', ['response' => 400, 'back_link' => true]);
     }
     $message = mb_substr($message, 0, 2000);
 
-    $order->update_meta_data('_wedding_booking_change_request', ['type' => $type, 'date' => $date, 'message' => $message, 'at' => time()]);
+    $order->update_meta_data('_wedding_booking_change_request', ['id' => wp_generate_uuid4(), 'type' => $type, 'date' => $date, 'message' => $message, 'at' => time()]);
     $note = sprintf(
         /* translators: 1: request type, 2: preferred date or "—", 3: customer's message */
         __("Customer requested: %1\$s\nPreferred date: %2\$s\nMessage: %3\$s", 'wedding-booking'),
@@ -428,6 +460,45 @@ function wedding_booking_booking_manage_url($order)
     $url = (int) $order->get_customer_id() > 0 ? $order->get_view_order_url() : $order->get_checkout_order_received_url();
 
     return $url . '#wedding-booking-booking';
+}
+
+/** A request link only while this booking can accept customer changes. */
+function wedding_booking_booking_request_url($order)
+{
+    if (! $order || ! is_a($order, 'WC_Order')
+        || (int) wedding_booking_opt('wedding_booking_customer_requests_enable') !== 1
+        || (int) $order->get_meta('_wedding_booking_is_balance_order', true) === 1
+        || $order->has_status(['cancelled', 'refunded'])
+        || ! wedding_booking_is_booking_order($order)) {
+        return '';
+    }
+    $meta = wedding_booking_get_order_booking_meta($order);
+    if ($meta['session_date'] === '' || $meta['session_date'] < wp_date('Y-m-d')) {
+        return '';
+    }
+    $base = (int) $order->get_customer_id() > 0 ? $order->get_view_order_url() : $order->get_checkout_order_received_url();
+    return add_query_arg('wedding_booking_change', 'request', $base) . '#wedding-booking-change-request';
+}
+
+/** Add the request link to both Wedding Booking and standard WooCommerce confirmations. */
+add_action('woocommerce_email_after_order_table', 'wedding_booking_email_append_request_link', 20, 4);
+function wedding_booking_email_append_request_link($order, $sent_to_admin = false, $plain_text = false, $email = null)
+{
+    if ($sent_to_admin || ! $email || ! in_array((string) $email->id, wedding_booking_order_confirmation_email_ids(), true)) {
+        return;
+    }
+    $url = wedding_booking_booking_request_url($order);
+    if ($url === '') {
+        return;
+    }
+    if ($plain_text) {
+        echo "\n" . __('Need to reschedule or cancel? Send a request here:', 'wedding-booking') . ' ' . esc_url_raw($url) . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- plain-text email.
+        echo __('Your booking stays unchanged until the studio approves your request.', 'wedding-booking') . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- plain-text email.
+        return;
+    }
+    echo wedding_booking_email_divider(24); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- email component escapes its own data.
+    echo wedding_booking_email_text(__('Need to reschedule or cancel? Send a request using the link below. Your booking stays unchanged until the studio approves it.', 'wedding-booking')); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- email component escapes its own data.
+    echo wedding_booking_email_button($url, __('Request a change', 'wedding-booking'), 'accent'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- email component escapes its own data.
 }
 
 /* ─────────────────────────────────────────────────────────────

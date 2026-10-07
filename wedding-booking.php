@@ -4,7 +4,7 @@
  * Plugin Name:  Wedding Booking
  * Plugin URI:   https://bestwebexpert.com
  * Description:  Multi-step wedding booking with backend management and WooCommerce checkout. Shortcode: [wedding_booking]
- * Version:      1.6.1
+ * Version:      1.6.4
  * Author:       Razibul Hasan
  * Author URI:   https://bestwebexpert.com
  * Text Domain:  wedding-booking
@@ -18,7 +18,7 @@
 
 defined('ABSPATH') || exit;
 
-define('WEDDING_BOOKING_VER', '1.6.1');
+define('WEDDING_BOOKING_VER', '1.6.4');
 define('WEDDING_BOOKING_URL', plugin_dir_url(__FILE__));
 define('WEDDING_BOOKING_DIR', plugin_dir_path(__FILE__));
 

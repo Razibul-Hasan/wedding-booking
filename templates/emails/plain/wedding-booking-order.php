@@ -14,6 +14,12 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
+/** @var WC_Order $order Supplied by WooCommerce's wc_get_template(). */
+/** @var string $email_heading */
+/** @var bool $sent_to_admin */
+/** @var WC_Email $email */
+/** @var string $additional_content */
+
 $wedding_booking_settings = wedding_booking_get_order_email_settings();
 
 echo "= " . wp_strip_all_tags($email_heading) . " =\n\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -65,7 +71,8 @@ if (! empty($wedding_booking_settings['order_table'])) {
 echo "\n";
 do_action('woocommerce_email_after_order_table', $order, $sent_to_admin, true, $email); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WooCommerce's own email hook.
 
-if (function_exists('wedding_booking_booking_manage_url') && ! $sent_to_admin) {
+if (function_exists('wedding_booking_booking_manage_url') && ! $sent_to_admin
+    && (! function_exists('wedding_booking_booking_request_url') || wedding_booking_booking_request_url($order) === '')) {
     echo "
 " . esc_html__('Manage your booking', 'wedding-booking') . ': ' . esc_url_raw(wedding_booking_booking_manage_url($order)) . "
 "; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

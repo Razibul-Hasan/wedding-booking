@@ -417,6 +417,7 @@ function wedding_booking_gcal_insert_event(array $event, $token)
  * admin screen.
  */
 add_action('wedding_booking_booking_created', 'wedding_booking_gcal_queue_sync', 10, 1);
+add_action('wedding_booking_booking_paid', 'wedding_booking_gcal_queue_sync', 10, 1);
 add_action('wedding_booking_booking_cancelled', 'wedding_booking_gcal_queue_sync', 10, 1);
 add_action('wedding_booking_booking_updated', 'wedding_booking_gcal_queue_sync', 10, 1);
 function wedding_booking_gcal_queue_sync($booking_id)

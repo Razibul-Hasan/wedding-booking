@@ -23,6 +23,13 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
+/** @var WC_Order $order Supplied by WooCommerce's wc_get_template(). */
+/** @var string $email_heading */
+/** @var bool $sent_to_admin */
+/** @var bool $plain_text */
+/** @var WC_Email $email */
+/** @var string $additional_content */
+
 $wedding_booking_content = '';
 
 $wedding_booking_status_label = $order->is_paid()

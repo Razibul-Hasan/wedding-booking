@@ -646,6 +646,8 @@ function wedding_booking_admin_prepare_booking($b, &$contracts = [])
         $request = [
             'type'       => (string) ($raw_req['type'] ?? 'other'),
             'type_label' => $types[$raw_req['type'] ?? 'other'] ?? $types['other'],
+            'at'         => (int) $raw_req['at'],
+            'id'         => (string) ($raw_req['id'] ?? ''),
             'date_label' => ! empty($raw_req['date']) ? wedding_booking_admin_date_label((string) $raw_req['date']) : '',
             'message'    => (string) ($raw_req['message'] ?? ''),
             'at_label'   => wp_date($dt_fmt, (int) $raw_req['at']),
@@ -1000,6 +1002,22 @@ function wedding_booking_admin_change_booking_status($booking_id, $status)
     $after = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE id = %d", $id)); // phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
     [$main, $due] = $after ? wedding_booking_admin_booking_orders($after) : [null, null];
     $final = $after ? wedding_booking_admin_status_key($after->status) : $status;
+    $request_mailed = false;
+    if ($final === 'cancelled' && $main) {
+        // A cancellation made through the regular status control also closes
+        // any pending request, so it cannot be approved against a void order.
+        $request = $main->get_meta('_wedding_booking_change_request', true);
+        if (is_array($request) && ! empty($request['at']) && empty($request['handled'])) {
+            $request['handled'] = time();
+            $request['decision'] = ($request['type'] ?? '') === 'cancel' ? 'approved' : 'handled';
+            $request['reviewed_by'] = get_current_user_id();
+            $main->update_meta_data('_wedding_booking_change_request', $request);
+            $main->save();
+            if ($request['decision'] === 'approved') {
+                $request_mailed = wedding_booking_admin_email_request_decision($main, $request);
+            }
+        }
+    }
 
     return [
         'booking_id'        => $id,
@@ -1009,6 +1027,7 @@ function wedding_booking_admin_change_booking_status($booking_id, $status)
         'main_order_status' => $main ? (string) $main->get_status() : '',
         'due_order_id'      => $due ? (int) $due->get_id() : 0,
         'due_order_status'  => $due ? (string) $due->get_status() : '',
+        'request_mailed'    => $request_mailed,
         /* translators: 1: booking id, 2: status label */
         'message'           => sprintf(__('Booking #%1$d is now “%2$s”.', 'wedding-booking'), $id, wedding_booking_admin_status_label($final)),
     ];
@@ -1138,6 +1157,21 @@ function wedding_booking_admin_render_bookings_notice()
         case 'status':
             /* translators: %d: booking id */
             $text = $bid ? sprintf(__('Booking #%d status updated.', 'wedding-booking'), $bid) : __('Booking status updated.', 'wedding-booking');
+            break;
+        case 'request_approved':
+            $text = __('Customer request approved and booking updated.', 'wedding-booking');
+            if (! $mail) {
+                $text .= ' ' . __('Customer email could not be sent; please contact them directly.', 'wedding-booking');
+            }
+            break;
+        case 'request_declined':
+            $text = __('Customer request declined. The booking remains unchanged.', 'wedding-booking');
+            if (! $mail) {
+                $text .= ' ' . __('Customer email could not be sent; please contact them directly.', 'wedding-booking');
+            }
+            break;
+        case 'request_handled':
+            $text = __('Customer question marked as handled.', 'wedding-booking');
             break;
     }
     if ($text !== '') {
@@ -2204,6 +2238,12 @@ function wedding_booking_admin_update_booking($booking_id, array $in)
         $main->set_customer_note($in['notes']);
         $main->update_meta_data('_wedding_booking_billing_event_date', $date);
         $main->update_meta_data('_wedding_booking_billing_event_time', $time);
+        if ($old_date !== $date) {
+            // A one-off reminder belongs to the old shoot date. Keep contact
+            // history and repeat limits, but allow the new date's reminder.
+            $main->delete_meta_data('_wedding_booking_reminder_before_sent');
+            $main->delete_meta_data('_wedding_booking_reminder_before_date');
+        }
         $due_by = (string) $main->get_meta('_wedding_booking_balance_due_date', true);
         if ($due_by !== '') {
             $main->update_meta_data('_wedding_booking_balance_due_date', $shift_due($due_by));
@@ -2220,8 +2260,9 @@ function wedding_booking_admin_update_booking($booking_id, array $in)
         }
         // A reschedule answers a pending change request.
         $request = $main->get_meta('_wedding_booking_change_request', true);
-        if ($moved && is_array($request) && empty($request['handled'])) {
+        if ($moved && is_array($request) && empty($request['handled']) && ($request['type'] ?? '') === 'reschedule') {
             $request['handled'] = time();
+            $request['decision'] = 'approved';
             $main->update_meta_data('_wedding_booking_change_request', $request);
         }
         if ($changes) {
@@ -2404,20 +2445,152 @@ function wedding_booking_admin_ajax_resolve_request()
     if (! wedding_booking_can_manage() || ! function_exists('wc_get_order')) {
         wp_send_json_error(['message' => __('Permission denied.', 'wedding-booking')]);
     }
-    global $wpdb;
-    $id  = absint(wp_unslash($_POST['id'] ?? 0));
-    $oid = (int) $wpdb->get_var($wpdb->prepare("SELECT order_id FROM {$wpdb->prefix}wedding_booking_bookings WHERE id = %d", $id)); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-    $order = $oid ? wc_get_order($oid) : null;
-    $request = $order ? $order->get_meta('_wedding_booking_change_request', true) : null;
-    if (! is_array($request)) {
-        wp_send_json_error(['message' => __('There is no open request on this booking.', 'wedding-booking')]);
+    $id       = absint(wp_unslash($_POST['id'] ?? 0));
+    $at       = absint(wp_unslash($_POST['request_at'] ?? 0));
+    $request_id = sanitize_text_field(wp_unslash($_POST['request_id'] ?? ''));
+    $decision = sanitize_key(wp_unslash($_POST['decision'] ?? ''));
+    $result   = wedding_booking_admin_resolve_change_request($id, $decision, $at, $request_id);
+    if (is_wp_error($result)) {
+        wp_send_json_error(['message' => $result->get_error_message()]);
     }
-    $request['handled'] = time();
-    $order->update_meta_data('_wedding_booking_change_request', $request);
-    /* translators: %s: user name */
-    $order->add_order_note(sprintf(__('Customer change request marked as handled by %s.', 'wedding-booking'), wedding_booking_admin_user_label()));
-    $order->save();
-    wp_send_json_success(['message' => __('Request marked as handled.', 'wedding-booking')]);
+    wp_send_json_success($result);
+}
+
+/**
+ * Apply one customer request only after an explicit admin decision. Reuse the
+ * normal edit/status paths so dates, orders and Google Calendar stay in sync.
+ * The request timestamp prevents a stale admin tab from acting on a new one.
+ *
+ * @return array|WP_Error
+ */
+function wedding_booking_admin_resolve_change_request($booking_id, $decision, $request_at, $request_id = '')
+{
+    if (! in_array($decision, ['approve', 'decline', 'handled'], true) || $booking_id < 1 || $request_at < 1) {
+        return new WP_Error('wedding_booking_request_invalid', __('Invalid request decision. Reload the booking and try again.', 'wedding-booking'));
+    }
+    global $wpdb;
+    $lock = 'wedding_booking_request_' . (int) $booking_id;
+    if ((int) $wpdb->get_var($wpdb->prepare('SELECT GET_LOCK(%s, 10)', $lock)) !== 1) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- serialize two admin decisions.
+        return new WP_Error('wedding_booking_request_busy', __('Another request decision is in progress. Please try again.', 'wedding-booking'));
+    }
+    try {
+        $table = $wpdb->prefix . 'wedding_booking_bookings';
+        $row   = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE id = %d", (int) $booking_id)); // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- custom bookings table.
+        $order = $row && ! empty($row->order_id) ? wc_get_order((int) $row->order_id) : null;
+        $request = $order ? $order->get_meta('_wedding_booking_change_request', true) : null;
+        if (! $order || ! is_array($request) || empty($request['at']) || ! empty($request['handled']) || (int) $request['at'] !== (int) $request_at
+            || (! empty($request['id']) && ! hash_equals((string) $request['id'], (string) $request_id))) {
+            return new WP_Error('wedding_booking_request_stale', __('This request is no longer pending. Reload the booking.', 'wedding-booking'));
+        }
+
+        $type = (string) ($request['type'] ?? 'other');
+        if ($decision === 'approve' && ! in_array($type, ['reschedule', 'cancel'], true)) {
+            return new WP_Error('wedding_booking_request_type', __('This request cannot change the booking automatically. Review it with the customer.', 'wedding-booking'));
+        }
+        if ($decision === 'handled' && $type !== 'other') {
+            return new WP_Error('wedding_booking_request_type', __('Choose Approve or Decline for a reschedule or cancellation request.', 'wedding-booking'));
+        }
+
+        $mailed = false;
+        if ($decision === 'approve') {
+            if ((string) $row->status === 'cancelled') {
+                return new WP_Error('wedding_booking_request_cancelled', __('The booking is already cancelled. Review it before deciding.', 'wedding-booking'));
+            }
+            if ($type === 'reschedule') {
+                $date = (string) ($request['date'] ?? '');
+                if (! preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $date, $parts)
+                    || ! checkdate((int) $parts[2], (int) $parts[3], (int) $parts[1])
+                    || $date === (string) $row->session_date) {
+                    return new WP_Error('wedding_booking_request_date', __('The requested new date is missing or unchanged. Edit the booking to choose a date, or decline this request.', 'wedding-booking'));
+                }
+                $rule = wedding_booking_date_rule_error($date);
+                if (is_wp_error($rule)) {
+                    return $rule;
+                }
+                $names = preg_split('/\s+/', trim((string) $row->client_name), 2);
+                $first = (string) $order->get_billing_first_name();
+                $last  = (string) $order->get_billing_last_name();
+                $input = [
+                    'session_date' => $date,
+                    'session_time' => (string) $row->session_time,
+                    'first_name'   => $first !== '' ? $first : (string) ($names[0] ?? ''),
+                    'last_name'    => $last !== '' ? $last : (string) ($names[1] ?? ''),
+                    'email'        => (string) $row->client_email !== '' ? (string) $row->client_email : (string) $order->get_billing_email(),
+                    'phone'        => (string) $row->client_phone !== '' ? (string) $row->client_phone : (string) $order->get_billing_phone(),
+                    'notes'        => (string) $row->notes !== '' ? (string) $row->notes : (string) $order->get_customer_note(),
+                    'notify'       => true,
+                    'override'     => false,
+                ];
+                $result = wedding_booking_admin_update_booking((int) $booking_id, $input);
+                if (is_wp_error($result)) {
+                    return $result; // Leave the request pending and the old date intact.
+                }
+                $mailed = ! empty($result['mailed']);
+            } else {
+                $result = wedding_booking_admin_change_booking_status((int) $booking_id, 'cancelled');
+                if (is_wp_error($result)) {
+                    return $result;
+                }
+                $mailed = ! empty($result['request_mailed']);
+            }
+        }
+
+        // The edit/status paths may have saved another instance of this order.
+        $order = wc_get_order((int) $row->order_id);
+        $request['handled']  = time();
+        $request['decision'] = $decision === 'approve' ? 'approved' : ($decision === 'decline' ? 'declined' : 'handled');
+        $request['reviewed_by'] = get_current_user_id();
+        $order->update_meta_data('_wedding_booking_change_request', $request);
+        $order->add_order_note(sprintf(
+            /* translators: 1: request type, 2: decision, 3: admin name */
+            __('Customer %1$s request %2$s by %3$s.', 'wedding-booking'),
+            $type,
+            $request['decision'],
+            wedding_booking_admin_user_label()
+        ));
+        $order->save();
+
+        // A reschedule already sends the detailed booking-update email. For
+        // cancellation and decline, send an explicit decision notification.
+        if ($decision === 'decline' || ($decision === 'approve' && $type === 'cancel' && ! $mailed)) {
+            $mailed = wedding_booking_admin_email_request_decision($order, $request);
+        }
+        $message = $request['decision'] === 'approved'
+            ? __('Request approved and booking updated.', 'wedding-booking')
+            : ($request['decision'] === 'declined' ? __('Request declined; the booking remains unchanged.', 'wedding-booking') : __('Request marked as handled.', 'wedding-booking'));
+        if ($decision !== 'handled' && ! $mailed) {
+            $message .= ' ' . __('The customer email could not be sent; please contact them directly.', 'wedding-booking');
+        }
+        return ['message' => $message, 'decision' => $request['decision'], 'mailed' => (bool) $mailed];
+    } finally {
+        $wpdb->get_var($wpdb->prepare('SELECT RELEASE_LOCK(%s)', $lock)); // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- release the decision lock.
+    }
+}
+
+/** Tell the customer when the studio approves a cancellation or declines a request. */
+function wedding_booking_admin_email_request_decision($order, array $request)
+{
+    $email = sanitize_email((string) $order->get_billing_email());
+    if ($email === '') {
+        return false;
+    }
+    $approved = $request['decision'] === 'approved';
+    $type = (string) ($request['type'] ?? 'other');
+    $meta = wedding_booking_get_order_booking_meta($order);
+    $content = wedding_booking_email_title($approved ? __('Your cancellation was approved', 'wedding-booking') : __('Your booking change request was declined', 'wedding-booking'));
+    $content .= wedding_booking_email_text($approved
+        ? __('Your booking has been cancelled. Payments are not refunded automatically; please contact the studio about any refund under your booking terms.', 'wedding-booking')
+        : __('The studio could not approve your request. Your booking details remain unchanged. Please reply to discuss another option.', 'wedding-booking'));
+    $content .= wedding_booking_email_facts([
+        ['label' => __('Booking', 'wedding-booking'), 'value' => '#' . $order->get_order_number()],
+        ['label' => __('Session date', 'wedding-booking'), 'value' => wedding_booking_email_pretty_date($meta['session_date'])],
+        ['label' => __('Request', 'wedding-booking'), 'value' => $type],
+    ]);
+    $studio = sanitize_email((string) get_option('wedding_booking_admin_email', get_option('admin_email')));
+    return (bool) wedding_booking_email_send($email, $approved ? __('Your booking cancellation was approved', 'wedding-booking') : __('Your booking change request was declined', 'wedding-booking'), $content, [
+        'eyebrow' => __('Booking request', 'wedding-booking'),
+        'headers' => $studio !== '' ? ['Reply-To: ' . $studio] : [],
+    ]);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -2466,6 +2639,12 @@ function wedding_booking_admin_send_pay_link_email($order)
     $content .= wedding_booking_email_button($url, sprintf(__('Pay %s now', 'wedding-booking'), $amount));
     $content .= wedding_booking_email_spacer(12);
     $content .= wedding_booking_email_text(__('If the button doesn\'t work, copy this link into your browser:', 'wedding-booking') . '<br><span style="word-break:break-all;">' . esc_html($url) . '</span>', true);
+    $request_url = function_exists('wedding_booking_booking_request_url') ? wedding_booking_booking_request_url($order) : '';
+    if ($request_url !== '') {
+        $content .= wedding_booking_email_divider(24);
+        $content .= wedding_booking_email_text(__('Need to reschedule or cancel? Send a request here. Your booking stays unchanged until the studio approves it.', 'wedding-booking'));
+        $content .= wedding_booking_email_button($request_url, __('Request a change', 'wedding-booking'), 'accent');
+    }
 
     $studio = sanitize_email((string) get_option('wedding_booking_admin_email', get_option('admin_email')));
 
@@ -2523,6 +2702,12 @@ function wedding_booking_admin_send_booking_updated_email($before, array $in, $d
     ]);
     $content .= wedding_booking_email_spacer(20);
     $content .= wedding_booking_email_text(__('If anything looks wrong, just reply to this email.', 'wedding-booking'));
+    $request_url = $main && function_exists('wedding_booking_booking_request_url') ? wedding_booking_booking_request_url($main) : '';
+    if ($request_url !== '') {
+        $content .= wedding_booking_email_divider(24);
+        $content .= wedding_booking_email_text(__('Need to reschedule or cancel? Send a request here. Your booking stays unchanged until the studio approves it.', 'wedding-booking'));
+        $content .= wedding_booking_email_button($request_url, __('Request a change', 'wedding-booking'), 'accent');
+    }
 
     $studio = sanitize_email((string) get_option('wedding_booking_admin_email', get_option('admin_email')));
 

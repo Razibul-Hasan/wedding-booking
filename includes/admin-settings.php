@@ -1147,7 +1147,7 @@ function wedding_booking_render_settings_customers()
 
     wedding_booking_setting_row_open(
         __('Change requests', 'wedding-booking'),
-        __('Customers can ask to reschedule or cancel from their booking. You get an email and the request shows on the booking. Nothing changes until you change it yourself.', 'wedding-booking')
+        __('Customer booking emails include a link to request a new date or cancellation. Their booking stays unchanged until you approve it in All Bookings. You can also decline and keep the original date.', 'wedding-booking')
     );
     echo '<input type="hidden" name="wedding_booking_customer_requests_enable" value="0">';
     echo wedding_booking_toggle_field('wedding_booking_customer_requests_enable', __('Let customers ask to reschedule or cancel', 'wedding-booking'), $req_on, __('You get an email and the request shows on the booking.', 'wedding-booking')); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside wedding_booking_toggle_field.
@@ -1338,6 +1338,11 @@ function wedding_booking_render_balance_reminder_card()
 
     echo '<div class="wedding-booking-rem-rules">';
 
+    echo '<div class="wedding-booking-rem-rule">';
+    echo '<label class="wedding-booking-rem-inline">' . esc_html__('Start automatic reminders', 'wedding-booking') . ' <input class="small-text" type="number" min="0" max="60" step="1" name="wedding_booking_balance_reminder_days_before" value="' . esc_attr($cfg['days_before']) . '"> ' . esc_html__('day(s) before the photoshoot, at 09:00', 'wedding-booking') . '</label>';
+    echo '<p class="description">' . esc_html__('Applies to both schedules below. No automatic reminder is sent before this date, even if the deposit was paid months earlier. 0 starts on the morning of the shoot.', 'wedding-booking') . '</p>';
+    echo '</div>';
+
     // ── Before the photoshoot ──
     echo '<div class="wedding-booking-rem-rule' . ($cfg['before_enable'] ? '' : ' is-off') . '">';
     echo '<input type="hidden" name="wedding_booking_enable_balance_reminders" value="0">';
@@ -1350,8 +1355,7 @@ function wedding_booking_render_balance_reminder_card()
     echo wedding_booking_help_tip(__('Sends one email, with a link to pay, to customers who still owe a balance a set number of days before their session. It goes out at 09:00 your time.', 'wedding-booking')); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside wedding_booking_help_tip.
     echo '</div>';
     echo '<div class="wedding-booking-rem-fields">';
-    echo '<label class="wedding-booking-rem-inline">' . esc_html__('Send it', 'wedding-booking') . ' <input class="small-text" type="number" min="0" max="60" step="1" name="wedding_booking_balance_reminder_days_before" value="' . esc_attr($cfg['days_before']) . '"> ' . esc_html__('day(s) before the photoshoot, at 09:00', 'wedding-booking') . '</label>';
-    echo '<p class="description">' . esc_html__('0 sends it on the morning of the shoot. A customer who books later than that still gets it, at least 12 hours after paying the deposit, as long as the shoot is still ahead.', 'wedding-booking') . '</p>';
+    echo '<p class="description">' . esc_html__('Sends once when the reminder period starts. A customer who books later still gets it, at least 12 hours after paying the deposit, as long as the shoot date has not passed.', 'wedding-booking') . '</p>';
     echo '</div>';
     echo '</div>';
 
@@ -1371,7 +1375,7 @@ function wedding_booking_render_balance_reminder_card()
     echo '<label class="wedding-booking-rem-inline">' . esc_html__('Stop after', 'wedding-booking') . ' <input class="small-text" type="number" min="0" max="100" step="1" name="wedding_booking_balance_reminder_repeat_max" value="' . esc_attr($cfg['repeat_max']) . '"> ' . esc_html__('reminders', 'wedding-booking') . ' <span class="wedding-booking-rem-hint">' . esc_html__('(0 = no limit, keep going until paid)', 'wedding-booking') . '</span></label>';
     echo '<input type="hidden" name="wedding_booking_balance_reminder_repeat_stop_after_shoot" value="0">';
     echo '<label class="wedding-booking-rem-inline"><input type="checkbox" name="wedding_booking_balance_reminder_repeat_stop_after_shoot" value="1"' . checked($cfg['repeat_stop_after_shoot'], true, false) . '> ' . esc_html__('Stop once the photoshoot date has passed', 'wedding-booking') . '</label>';
-    echo '<p class="description">' . esc_html__('The first one goes out that many days after the deposit, or after the last reminder. When you switch this on, customers who already owe a balance get their first one that many days from now, not all at once.', 'wedding-booking') . '</p>';
+    echo '<p class="description">' . esc_html__('Repeats only after the reminder period above starts, with this interval after the deposit or last reminder. When switched on, it also waits this interval before sending to existing bookings. It never starts chasing a next-year booking immediately.', 'wedding-booking') . '</p>';
     echo '</div>';
     echo '</div>';
 

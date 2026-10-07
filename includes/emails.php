@@ -884,12 +884,13 @@ function wedding_booking_balance_reminder_default_subject()
 /**
  * Balance-reminder settings (Wedding Booking → Settings → Emails → Balance reminders).
  *
- * Two independent schedules:
+ * Two schedules sharing the same earliest date (N days before the shoot):
  * - "before": one email N days before the photoshoot. Its switch is the
  *   original wedding_booking_enable_balance_reminders option, so sites that already had
  *   reminders on keep them on.
- * - "repeat": an email every N days until the balance is paid, optionally
- *   capped at a number of reminders or stopped once the shoot date passes.
+ * - "repeat": once inside that period, an email every N days until paid,
+ *   optionally capped or stopped once the shoot date passes. The earliest
+ *   date applies even when only this repeating schedule is enabled.
  *
  * repeat_since is set when "repeat" is switched on, so turning it on doesn't
  * email every old unpaid booking in the same hour.

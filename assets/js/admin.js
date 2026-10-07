@@ -1136,11 +1136,20 @@
         '<p class="wedding-booking-mv-request-msg">' +
         escHtml(v.request.message || "") +
         "</p>" +
+        para("Pending approval. The booking stays on its current date until you approve this request.", "wedding-booking-mv-request-date") +
         '<div class="wedding-booking-mv-request-actions">' +
-        (ctxWc
-          ? '<button type="button" class="button button-small wedding-booking-mv-edit">Reschedule…</button>'
+        (ctxWc && v.request.type === "reschedule" && v.request.date_label
+          ? '<button type="button" class="button button-primary button-small wedding-booking-mv-decision" data-decision="approve">Approve new date</button>'
           : "") +
-        '<button type="button" class="button button-small wedding-booking-mv-resolve">Mark as handled</button>' +
+        (ctxWc && v.request.type === "cancel"
+          ? '<button type="button" class="button button-primary button-small wedding-booking-mv-decision" data-decision="approve">Approve cancellation</button>'
+          : "") +
+        (v.request.type === "reschedule" && ctxWc
+          ? '<button type="button" class="button button-small wedding-booking-mv-edit">Choose another date…</button>'
+          : "") +
+        (v.request.type === "other"
+          ? '<button type="button" class="button button-small wedding-booking-mv-decision" data-decision="handled">Mark handled</button>'
+          : '<button type="button" class="button button-small wedding-booking-mv-decision" data-decision="decline">Decline request</button>') +
         '<span class="wedding-booking-mv-request-msgline" aria-live="polite"></span></div></div>';
     }
 
@@ -1325,30 +1334,55 @@
       });
     }
 
-    const resolveBtn = body.querySelector(".wedding-booking-mv-resolve");
-    if (resolveBtn) {
-      resolveBtn.addEventListener("click", () => {
-        const line = body.querySelector(".wedding-booking-mv-request-msgline");
-        resolveBtn.disabled = true;
-        post("wedding_booking_admin_resolve_request", { id: b.id })
-          .then((res) => {
-            if (res.success) {
-              b.wedding_booking_view.request = null;
-              const box = body.querySelector(".wedding-booking-mv-request");
-              if (box) box.remove();
-              const pill = document.querySelector('.wedding-booking-brow[data-id="' + b.id + '"] .wedding-booking-req-pill');
-              if (pill) pill.remove();
-            } else {
-              resolveBtn.disabled = false;
-              if (line) line.textContent = (res.data && res.data.message) || "Could not update.";
-            }
-          })
-          .catch(() => {
-            resolveBtn.disabled = false;
-            if (line) line.textContent = "Network error.";
-          });
+    body.querySelectorAll(".wedding-booking-mv-decision").forEach((button) => {
+      button.addEventListener("click", () => {
+        if (!sbDialog || !b.wedding_booking_view.request) return;
+        const request = b.wedding_booking_view.request;
+        const decision = button.dataset.decision;
+        const cancel = decision === "approve" && request.type === "cancel";
+        const heading = decision === "approve"
+          ? (cancel ? "Approve cancellation?" : "Approve new date?")
+          : (decision === "decline" ? "Decline this request?" : "Mark request handled?");
+        const details = cancel
+          ? "This cancels the WooCommerce booking, releases its date and removes its Google Calendar event. Payments are not refunded automatically."
+          : decision === "approve"
+            ? "This moves the booking to " + request.date_label + " if the date and start time are available. The customer will be emailed."
+            : decision === "decline"
+              ? "The customer will be emailed. Their booking stays on its current date."
+              : "This records that you handled the customer's question.";
+        sbDialog.open({
+          title: heading,
+          html: para(details) + '<p class="wbook-dialog-msg" aria-live="polite"></p>',
+          danger: cancel,
+          buttons: [
+            { label: "Go back" },
+            {
+              label: decision === "approve" ? "Approve request" : (decision === "decline" ? "Decline request" : "Mark handled"),
+              primary: !cancel,
+              danger: cancel,
+              onClick: (confirmBtn) => {
+                confirmBtn.disabled = true;
+                sbDialog.say("Saving decision…", true);
+                post("wedding_booking_admin_resolve_request", { id: b.id, decision, request_at: request.at, request_id: request.id || "" })
+                  .then((res) => {
+                    if (!res.success) {
+                      confirmBtn.disabled = false;
+                      sbDialog.say((res.data && res.data.message) || "Could not decide this request.", false);
+                      return;
+                    }
+                    sbDialog.close(true);
+                    reloadWith({ wedding_booking_msg: "request_" + (res.data.decision || "handled"), wedding_booking_bid: b.id, wedding_booking_mail: res.data.mailed ? 1 : 0 });
+                  })
+                  .catch(() => {
+                    confirmBtn.disabled = false;
+                    sbDialog.say("Network error. Please try again.", false);
+                  });
+              },
+            },
+          ],
+        });
       });
-    }
+    });
 
     modal.style.display = "flex";
     const close = modal.querySelector(".wbook-modal-close");
