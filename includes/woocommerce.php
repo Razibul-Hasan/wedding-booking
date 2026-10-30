@@ -2803,6 +2803,59 @@ function wedding_booking_cancel_superseded_booking_order($order_id, $order_key)
     $order->update_status('cancelled', __('Superseded by a new booking attempt.', 'wedding-booking'));
 }
 
+/**
+ * Remember a guest's booking order in their WooCommerce session, so the
+ * order-pay / order-received pages recognise the browser that placed it.
+ * Without this, WooCommerce asks guests to log in or verify their email
+ * before paying, even when accounts aren't required for booking.
+ */
+function wedding_booking_remember_guest_order($order)
+{
+    if (is_user_logged_in() || ! $order || ! function_exists('WC')) {
+        return;
+    }
+
+    wedding_booking_ensure_wc_frontend_context();
+    if (! WC()->session) {
+        return;
+    }
+
+    if (! WC()->session->has_session()) {
+        WC()->session->set_customer_session_cookie(true);
+    }
+
+    $ids   = array_map('absint', (array) WC()->session->get('wedding_booking_guest_orders', []));
+    $ids[] = (int) $order->get_id();
+    WC()->session->set('wedding_booking_guest_orders', array_slice(array_unique($ids), -20));
+    WC()->session->save_data();
+}
+
+add_filter('woocommerce_order_email_verification_required', 'wedding_booking_skip_guest_email_verification', 10, 3);
+function wedding_booking_skip_guest_email_verification($required, $order, $context = '')
+{
+    if (! $required || ! $order || (int) $order->get_customer_id() > 0) {
+        return $required;
+    }
+
+    // Payment links Wedding Booking emails out (rest payment, reminders,
+    // admin-added bookings) open in a browser that never placed the order.
+    // They carry the order key, which WooCommerce has already matched by
+    // now, so the link itself identifies the customer.
+    if (in_array($context, ['order-pay', 'order-received'], true) && wedding_booking_is_booking_order($order)) {
+        $key = isset($_GET['key']) ? sanitize_text_field(wp_unslash($_GET['key'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- compared to the order key, not used otherwise.
+        if ($key !== '' && hash_equals($order->get_order_key(), $key)) {
+            return false;
+        }
+    }
+
+    if (wedding_booking_account_required_for_booking() || ! function_exists('WC') || ! WC()->session) {
+        return $required;
+    }
+
+    $ids = array_map('absint', (array) WC()->session->get('wedding_booking_guest_orders', []));
+    return in_array((int) $order->get_id(), $ids, true) ? false : $required;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    WooCommerce PayPal Payments compatibility — the embedded pay page
    must always render the smart buttons / card fields, even when the
@@ -3017,6 +3070,7 @@ function wedding_booking_ajax_place_booking_order()
     if (! $order) {
         wp_send_json_error(['message' => __('Could not create your booking order. Please try again.', 'wedding-booking')]);
     }
+    wedding_booking_remember_guest_order($order);
 
     // Try to complete payment right here so the customer never leaves the
     // booking form. Gateways without payment fields (bank transfer, cash on
